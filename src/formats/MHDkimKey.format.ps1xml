@@ -1,0 +1,36 @@
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>MHDkimKeyDefaultView</Name>
+            <ViewSelectedBy>
+                <TypeName>MHDkimKey</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <PropertyName>Domain</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>PublicKey</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>KeyLength</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>DKIM_TXT</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>DKIM_Selector</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>PrivateKey</PropertyName>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>

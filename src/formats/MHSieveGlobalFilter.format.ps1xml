@@ -1,0 +1,24 @@
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>MHSieveGlobalFilterDefaultView</Name>
+            <ViewSelectedBy>
+                <TypeName>MHSieveGlobalFilter</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem>
+                                <PropertyName>PreFilter</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>PostFilter</PropertyName>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
