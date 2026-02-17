@@ -3,7 +3,18 @@
 # More information can be found here: https://thedavecarroll.com/powershell/how-i-implement-module-variables/
 $MailcowHelper = [ordered]@{
     ConnectParams       = @{}
-    ArgumentCompleterConfig = @{}
+    ArgumentCompleterConfig = @{
+        EnableFor = @(
+            "Alias",
+            "AliasDomain",
+            "Domain",
+            "DomainTemplate",
+            "DomainAdmin",
+            "Mailbox",
+            "MailboxTemplate",
+            "Resource"
+        )
+    }
     ArgumentCompleter       = @{}
 }
 New-Variable -Name MailcowHelperSession -Value $MailcowHelper -Scope Script -Force
@@ -3624,7 +3635,9 @@ function Get-MailcowHelperConfig {
         else {
             if ($Config.SessionData) {
                 $Script:MailcowHelperSession.ConnectParams = $Config.SessionData.ConnectParams
-                $Script:MailcowHelperSession.ArgumentCompleterConfig = $Config.SessionData.ArgumentCompleterConfig
+                if ($null -ne $Config.SessionData.ArgumentCompleterConfig) {
+                    $Script:MailcowHelperSession.ArgumentCompleterConfig = $Config.SessionData.ArgumentCompleterConfig
+                }
 
                 # Convert ApiKey stored as secure string back to plain text.
                 if (-not [System.String]::IsNullOrEmpty($Script:MailcowHelperSession.ConnectParams.ApiKey)) {
@@ -5396,48 +5409,52 @@ function Invoke-MailcowApiRequest {
             $InvokeWebRequestParams.Body = $Body | ConvertTo-Json -Depth 5
         }
 
-        # Execute the web request.
-        $Result = Invoke-WebRequest @InvokeWebRequestParams
+        try {
+            # Execute the web request.
+            $Result = Invoke-WebRequest @InvokeWebRequestParams
 
-        # Check result.
-        if ($null -ne $Result) {
-            switch ($Result.StatusCode) {
-                200 {
-                    if ([System.String]::IsNullOrEmpty($Result.Content)) {
-                        Write-MailcowHelperLog -Message "Connection successful, but not authorized." -Level Warning
-                    }
-                    else {
-                        Write-MailcowHelperLog -Message "Connection successful."
-
-                        if ($Raw.IsPresent) {
-                            # Return the content received as it is.
-                            $Result.Content
+            # Check result.
+            if ($null -ne $Result) {
+                switch ($Result.StatusCode) {
+                    200 {
+                        if ([System.String]::IsNullOrEmpty($Result.Content)) {
+                            Write-MailcowHelperLog -Message "Connection successful, but not authorized." -Level Warning
                         }
                         else {
-                            if ($Result.Content -eq "{}") {
-                                # Received an empty JSON object. We don't want to return an empty object.
-                                Write-MailcowHelperLog -Message "Received empty result."
+                            Write-MailcowHelperLog -Message "Connection successful."
+
+                            if ($Raw.IsPresent) {
+                                # Return the content received as it is.
+                                $Result.Content
                             }
                             else {
-                                # Convert the received JSON object ot a PSCustomObject and return it.
-                                $Result.Content | ConvertFrom-Json
+                                if ($Result.Content -eq "{}") {
+                                    # Received an empty JSON object. We don't want to return an empty object.
+                                    Write-MailcowHelperLog -Message "Received empty result."
+                                }
+                                else {
+                                    # Convert the received JSON object ot a PSCustomObject and return it.
+                                    $Result.Content | ConvertFrom-Json
+                                }
                             }
                         }
+                        break
                     }
-                    break
-                }
-                401 {
-                    Write-MailcowHelperLog -Message "Access denied / Not authorzied!" -Level Warning
-                    break
-                }
-                default {
-                    # tbd
-                    break
+                    default {
+                        # tbd
+                        break
+                    }
                 }
             }
         }
-        else {
-            Write-MailcowHelperLog -Message "Error connecting to mailcow server [$Computername]!" -Level Warning
+        catch {
+            $ErrorRecord = $_
+            if ($null -eq $ErrorRecord) {
+                throw "Error connecting to mailcow server [$Computername]."
+            }
+            else {
+                throw "Error connecting to mailcow server [$Computername]: [$($ErrorRecord.ErrorDetails.Message)]"
+            }
         }
     }
 }
@@ -16032,7 +16049,16 @@ function Set-MailcowHelperConfig {
                 SkipCertificateCheck = $false
             }
             ArgumentCompleterConfig = @{
-                EnableFor = @("Alias", "AliasDomain", "Domain", "DomainAdmin", "Mailbox", "Resource")
+                EnableFor = @(
+                    "Alias",
+                    "AliasDomain",
+                    "Domain",
+                    "DomainTemplate",
+                    "DomainAdmin",
+                    "Mailbox",
+                    "MailboxTemplate",
+                    "Resource"
+                )
             }
         }
     }
@@ -16061,7 +16087,7 @@ function Set-MailcowHelperConfig {
 
     # Update ArgumentCompleter SessionData.
     if ($Script:MailcowHelperSession.ArgumentCompleterConfig) {
-        # Save the connection paramets from the session variable.
+        # Save the connection parameters from the session variable.
         $CurrentConfig.SessionData.ArgumentCompleterConfig = $Script:MailcowHelperSession.ArgumentCompleterConfig
     }
 

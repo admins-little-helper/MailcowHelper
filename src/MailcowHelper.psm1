@@ -2,7 +2,18 @@
 # More information can be found here: https://thedavecarroll.com/powershell/how-i-implement-module-variables/
 $MailcowHelper = [ordered]@{
     ConnectParams           = @{}
-    ArgumentCompleterConfig = @{}
+    ArgumentCompleterConfig = @{
+        EnableFor = @(
+            "Alias",
+            "AliasDomain",
+            "Domain",
+            "DomainTemplate",
+            "DomainAdmin",
+            "Mailbox",
+            "MailboxTemplate",
+            "Resource"
+        )
+    }
     ArgumentCompleter       = @{}
 }
 New-Variable -Name MailcowHelperSession -Value $MailcowHelper -Scope Script -Force

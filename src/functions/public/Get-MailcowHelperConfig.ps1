@@ -76,7 +76,9 @@ function Get-MailcowHelperConfig {
         else {
             if ($Config.SessionData) {
                 $Script:MailcowHelperSession.ConnectParams = $Config.SessionData.ConnectParams
-                $Script:MailcowHelperSession.ArgumentCompleterConfig = $Config.SessionData.ArgumentCompleterConfig
+                if ($null -ne $Config.SessionData.ArgumentCompleterConfig) {
+                    $Script:MailcowHelperSession.ArgumentCompleterConfig = $Config.SessionData.ArgumentCompleterConfig
+                }
 
                 # Convert ApiKey stored as secure string back to plain text.
                 if (-not [System.String]::IsNullOrEmpty($Script:MailcowHelperSession.ConnectParams.ApiKey)) {

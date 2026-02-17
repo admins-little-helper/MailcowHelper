@@ -12,7 +12,7 @@
     RootModule           = 'MailcowHelper.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '1.0.0'
+    ModuleVersion        = '1.0.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -58,8 +58,8 @@
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
     ScriptsToProcess     = @(
-        'Classes\MailcowHelperArgumentCompleterAttribute.ps1'
-        'Classes\MailcowHelperMailboxActiveState.ps1'
+        'classes\MailcowHelperArgumentCompleterAttribute.ps1'
+        'classes\MailcowHelperMailboxActiveState.ps1'
     )
 
     # Type files (.ps1xml) to be loaded when importing this module
@@ -67,40 +67,40 @@
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @(
-        "Formats\MHAddressRewriteBccMap.format.ps1xml",
-        "Formats\MHAddressRewriteRecipientMap.format.ps1xml",
-        "Formats\MHAdmin.format.ps1xml",
-        "Formats\MHAlias.format.ps1xml",
-        "Formats\MHAliasDomain.format.ps1xml",
-        "Formats\MHAliasTimeLimited.format.ps1xml",
-        "Formats\MHAppPassword.format.ps1xml",
-        "Formats\MHAppPassword.format.ps1xml",
-        "Formats\MHDomain.format.ps1xml",
-        "Formats\MHDomainAdmin.format.ps1xml",
-        "Formats\MHDomainAntiSpamPolicy.format.ps1xml",
-        "Formats\MHDomainTemplate.format.ps1xml",
-        "Formats\MHFail2BanConfig.format.ps1xml",
-        "Formats\MHForwardingHost.format.ps1xml",
-        "Formats\MHIdentityProvider.format.ps1xml",
-        "Formats\MHLog.format.ps1xml",
-        "Formats\MHMailbox.format.ps1xml",
-        "Formats\MHMailboxLastLogin.format.ps1xml",
-        "Formats\MHMailboxSpamScore.format.ps1xml",
-        "Formats\MHMailboxTemplate.format.ps1xml",
-        "Formats\MHOauthClient.format.ps1xml",
-        "Formats\MHPasswordPolicy.format.ps1xml",
-        "Formats\MHQuarantine.format.ps1xml",
-        "Formats\MHQueue.format.ps1xml",
-        "Formats\MHRatelimit.format.ps1xml",
-        "Formats\MHResource.format.ps1xml",
-        "Formats\MHRoutingRelayHost.format.ps1xml",
-        "Formats\MHRoutingTransport.format.ps1xml",
-        "Formats\MHRspamdSetting.format.ps1xml",
-        "Formats\MHSieveFilter.format.ps1xml",
-        "Formats\MHSieveGlobalFilter.format.ps1xml",
-        "Formats\MHStatus.format.ps1xml",
-        "Formats\MHSyncJob.format.ps1xml",
-        "Formats\MHTlsPolicyMap.format.ps1xml"
+        "formats\MHAddressRewriteBccMap.format.ps1xml",
+        "formats\MHAddressRewriteRecipientMap.format.ps1xml",
+        "formats\MHAdmin.format.ps1xml",
+        "formats\MHAlias.format.ps1xml",
+        "formats\MHAliasDomain.format.ps1xml",
+        "formats\MHAliasTimeLimited.format.ps1xml",
+        "formats\MHAppPassword.format.ps1xml",
+        "formats\MHAppPassword.format.ps1xml",
+        "formats\MHDomain.format.ps1xml",
+        "formats\MHDomainAdmin.format.ps1xml",
+        "formats\MHDomainAntiSpamPolicy.format.ps1xml",
+        "formats\MHDomainTemplate.format.ps1xml",
+        "formats\MHFail2BanConfig.format.ps1xml",
+        "formats\MHForwardingHost.format.ps1xml",
+        "formats\MHIdentityProvider.format.ps1xml",
+        "formats\MHLog.format.ps1xml",
+        "formats\MHMailbox.format.ps1xml",
+        "formats\MHMailboxLastLogin.format.ps1xml",
+        "formats\MHMailboxSpamScore.format.ps1xml",
+        "formats\MHMailboxTemplate.format.ps1xml",
+        "formats\MHOauthClient.format.ps1xml",
+        "formats\MHPasswordPolicy.format.ps1xml",
+        "formats\MHQuarantine.format.ps1xml",
+        "formats\MHQueue.format.ps1xml",
+        "formats\MHRatelimit.format.ps1xml",
+        "formats\MHResource.format.ps1xml",
+        "formats\MHRoutingRelayHost.format.ps1xml",
+        "formats\MHRoutingTransport.format.ps1xml",
+        "formats\MHRspamdSetting.format.ps1xml",
+        "formats\MHSieveFilter.format.ps1xml",
+        "formats\MHSieveGlobalFilter.format.ps1xml",
+        "formats\MHStatus.format.ps1xml",
+        "formats\MHSyncJob.format.ps1xml",
+        "formats\MHTlsPolicyMap.format.ps1xml"
     )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess

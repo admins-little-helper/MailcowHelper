@@ -74,7 +74,16 @@ function Set-MailcowHelperConfig {
                 SkipCertificateCheck = $false
             }
             ArgumentCompleterConfig = @{
-                EnableFor = @("Alias", "AliasDomain", "Domain", "DomainAdmin", "Mailbox", "Resource")
+                EnableFor = @(
+                    "Alias",
+                    "AliasDomain",
+                    "Domain",
+                    "DomainTemplate",
+                    "DomainAdmin",
+                    "Mailbox",
+                    "MailboxTemplate",
+                    "Resource"
+                )
             }
         }
     }
@@ -103,7 +112,7 @@ function Set-MailcowHelperConfig {
 
     # Update ArgumentCompleter SessionData.
     if ($Script:MailcowHelperSession.ArgumentCompleterConfig) {
-        # Save the connection paramets from the session variable.
+        # Save the connection parameters from the session variable.
         $CurrentConfig.SessionData.ArgumentCompleterConfig = $Script:MailcowHelperSession.ArgumentCompleterConfig
     }
 

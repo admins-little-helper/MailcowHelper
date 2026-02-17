@@ -119,48 +119,52 @@ function Invoke-MailcowApiRequest {
             $InvokeWebRequestParams.Body = $Body | ConvertTo-Json -Depth 5
         }
 
-        # Execute the web request.
-        $Result = Invoke-WebRequest @InvokeWebRequestParams
+        try {
+            # Execute the web request.
+            $Result = Invoke-WebRequest @InvokeWebRequestParams
 
-        # Check result.
-        if ($null -ne $Result) {
-            switch ($Result.StatusCode) {
-                200 {
-                    if ([System.String]::IsNullOrEmpty($Result.Content)) {
-                        Write-MailcowHelperLog -Message "Connection successful, but not authorized." -Level Warning
-                    }
-                    else {
-                        Write-MailcowHelperLog -Message "Connection successful."
-
-                        if ($Raw.IsPresent) {
-                            # Return the content received as it is.
-                            $Result.Content
+            # Check result.
+            if ($null -ne $Result) {
+                switch ($Result.StatusCode) {
+                    200 {
+                        if ([System.String]::IsNullOrEmpty($Result.Content)) {
+                            Write-MailcowHelperLog -Message "Connection successful, but not authorized." -Level Warning
                         }
                         else {
-                            if ($Result.Content -eq "{}") {
-                                # Received an empty JSON object. We don't want to return an empty object.
-                                Write-MailcowHelperLog -Message "Received empty result."
+                            Write-MailcowHelperLog -Message "Connection successful."
+
+                            if ($Raw.IsPresent) {
+                                # Return the content received as it is.
+                                $Result.Content
                             }
                             else {
-                                # Convert the received JSON object ot a PSCustomObject and return it.
-                                $Result.Content | ConvertFrom-Json
+                                if ($Result.Content -eq "{}") {
+                                    # Received an empty JSON object. We don't want to return an empty object.
+                                    Write-MailcowHelperLog -Message "Received empty result."
+                                }
+                                else {
+                                    # Convert the received JSON object ot a PSCustomObject and return it.
+                                    $Result.Content | ConvertFrom-Json
+                                }
                             }
                         }
+                        break
                     }
-                    break
-                }
-                401 {
-                    Write-MailcowHelperLog -Message "Access denied / Not authorzied!" -Level Warning
-                    break
-                }
-                default {
-                    # tbd
-                    break
+                    default {
+                        # tbd
+                        break
+                    }
                 }
             }
         }
-        else {
-            Write-MailcowHelperLog -Message "Error connecting to mailcow server [$Computername]!" -Level Warning
+        catch {
+            $ErrorRecord = $_
+            if ($null -eq $ErrorRecord) {
+                throw "Error connecting to mailcow server [$Computername]."
+            }
+            else {
+                throw "Error connecting to mailcow server [$Computername]: [$($ErrorRecord.ErrorDetails.Message)]"
+            }
         }
     }
 }
