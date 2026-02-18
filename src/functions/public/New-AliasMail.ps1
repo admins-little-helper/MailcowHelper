@@ -119,7 +119,7 @@ function New-AliasMail {
     }
 
     process {
-        foreach ($AliasItem in $Alias) {
+        foreach ($IdentityItem in $Identity) {
             # Prepare the RequestUri path.
             $RequestUriPath = $UriPath
 
@@ -128,7 +128,7 @@ function New-AliasMail {
                 # By default, activate the new alias.
                 active  = 1
                 # Set the Alias address.
-                address = $AliasItem.Address
+                address = $IdentityItem.Address
             }
             if ($PSBoundParameters.ContainsKey("Destination")) {
                 # Set the specified destination address.
@@ -168,8 +168,8 @@ function New-AliasMail {
                 $Body.private_comment = $PrivateComment
             }
 
-            if ($PSCmdlet.ShouldProcess("alias [$AliasItem].", "Add")) {
-                Write-MailcowHelperLog -Message "Adding alias [$AliasItem]." -Level Information
+            if ($PSCmdlet.ShouldProcess("alias [$IdentityItem].", "Add")) {
+                Write-MailcowHelperLog -Message "Adding alias [$IdentityItem]." -Level Information
                 # Execute the API call.
                 $InvokeMailcowApiRequestParams = @{
                     UriPath = $RequestUriPath
