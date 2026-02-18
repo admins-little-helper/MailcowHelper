@@ -2,7 +2,7 @@
 
 ## About
 
-This is an unofficial PowerShell module allowing to manage mailcow by using the mailcow REST API.
+An unofficial PowerShell module for managing mailcow via the mailcow REST API.
 
 ## Disclaimer
 
