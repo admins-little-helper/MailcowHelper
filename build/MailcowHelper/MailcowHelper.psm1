@@ -2,7 +2,7 @@
 # Adding Module variable, aka Pseudo-Namespace
 # More information can be found here: https://thedavecarroll.com/powershell/how-i-implement-module-variables/
 $MailcowHelper = [ordered]@{
-    ConnectParams       = @{}
+    ConnectParams           = @{}
     ArgumentCompleterConfig = @{
         EnableFor = @(
             "Alias",
@@ -5885,18 +5885,27 @@ function New-AliasMail {
     .PARAMETER PrivateComment
         Specify a private comment.
 
+    .PARAMETER AllowSendAs
+        Allow the destination mailbox uesrs to SendAs the alias.
+
     .EXAMPLE
-        New-MHMailAlias -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
+        New-MHAliasMail -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
 
         Creates an alias "alias@example.com" for mailbox "mailbox@example.com". The alias will be visible for the user in SOGo.
 
     .EXAMPLE
-        New-MHMailAlias -Alias "spam@example.com" -Destination "mailbox@example.com" -LearnAsSpam
+        New-MHAliasMail -Alias "alias2@example.com" -Destination "mailbox@example.com" -SOGoVisible -AllowSendAs
+
+        Creates alias "alias2@example.com" for mailbox "mailbox@example.com". The alias will be visible for the user in SOGo.
+        The user of "mailbox@example.com" will get the permission to SendAs the alias.
+
+    .EXAMPLE
+        New-MHAliasMail -Alias "spam@example.com" -Destination "mailbox@example.com" -LearnAsSpam
 
         Creates an alias "spam@example.com" for mailbox "mailbox@example.com". Mails sent to the new alias will be treated as spam.
 
     .EXAMPLE
-        New-MHMailAlias -Alias "groupA@example.com" -Destination "user1@example.com", "user2@example.com"
+        New-MHAliasMail -Alias "groupA@example.com" -Destination "user1@example.com", "user2@example.com"
 
         This creates an alias that acts like a distribution group because mails to the alias are forwarded to two mailboxes.
 
@@ -5917,7 +5926,7 @@ function New-AliasMail {
     [OutputType([PSCustomObject])]
     [CmdletBinding(SupportsShouldProcess = $true)]
     param(
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The new alias mail address to create.")]
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The alias mail address to create.")]
         [Alias("Alias")]
         [System.Net.Mail.MailAddress]
         $Identity,
@@ -5957,7 +5966,11 @@ function New-AliasMail {
 
         [Parameter(Position = 9, Mandatory = $false, HelpMessage = "Specify a private comment.")]
         [System.String]
-        $PrivateComment
+        $PrivateComment,
+
+        [Parameter(Position = 10, Mandatory = $false, HelpMessage = "Allow the destination mailbox uesrs to SendAs the alias.")]
+        [System.Management.Automation.SwitchParameter]
+        $AllowSendAs
     )
 
     begin {
@@ -6013,6 +6026,10 @@ function New-AliasMail {
             if ($PSBoundParameters.ContainsKey("PrivateComment")) {
                 # Set the private comment for the alias.
                 $Body.private_comment = $PrivateComment
+            }
+            if ($PSBoundParameters.ContainsKey("AllowSendAs")) {
+                # Set SenderAllowed option.
+                $Body.sender_allowed = if ($AllowSendAs.IsPresent) { "1" } else { "0" }
             }
 
             if ($PSCmdlet.ShouldProcess("alias [$AliasItem].", "Add")) {
@@ -11362,13 +11379,16 @@ function Set-AliasMail {
     .PARAMETER PrivateComment
         Specify a private comment.
 
+    .PARAMETER AllowSendAs
+        Allow the destination mailbox uesrs to SendAs the alias.
+
     .EXAMPLE
-        Set-MHMailAlias -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
+        Set-MHAliasMail -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
 
         Creates an alias "alias@example.com" for mailbox "mailbox@example.com". The alias will be visible for the user in SOGo.
 
     .EXAMPLE
-        Set-MHMailAlias -Alias "spam@example.com" -Destination "mailbox@example.com" LearnAsSpam
+        Set-MHAliasMail -Alias "spam@example.com" -Destination "mailbox@example.com" LearnAsSpam
 
         Creates an alias "spam@example.com" for mailbox "mailbox@example.com". Mails sent to the new alias will be treated as spam.
 
@@ -11387,9 +11407,9 @@ function Set-AliasMail {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, DefaultParameterSetName = "DestinationMailbox")]
     param(
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The  alias mail address to update.")]
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The alias mail address to update.")]
         [MailcowHelperArgumentCompleter("Alias")]
         [Alias("Alias")]
         [System.Net.Mail.MailAddress]
@@ -11430,7 +11450,11 @@ function Set-AliasMail {
 
         [Parameter(Position = 9, Mandatory = $false, HelpMessage = "Specify a private comment.")]
         [System.String]
-        $PrivateComment
+        $PrivateComment,
+
+        [Parameter(Position = 10, Mandatory = $false, HelpMessage = "Allow the destination mailbox uesrs to SendAs the alias.")]
+        [System.Management.Automation.SwitchParameter]
+        $AllowSendAs
     )
 
     begin {
@@ -11488,9 +11512,14 @@ function Set-AliasMail {
             # Set the private comment for the alias.
             $Body.attr.private_comment = $PrivateComment
         }
+        if ($PSBoundParameters.ContainsKey("AllowSendAs")) {
+            # Set SenderAllowed option.
+            $Body.attr.sender_allowed = if ($AllowSendAs.IsPresent) { "1" } else { "0" }
+        }
 
         if ($PSCmdlet.ShouldProcess("alias [$($Identity.Address)].", "Update")) {
             Write-MailcowHelperLog -Message "Updating alias id [$($AliasId.Id)] with address [$($Identity.Address)]." -Level Information
+
             # Execute the API call.
             $InvokeMailcowApiRequestParams = @{
                 UriPath = $RequestUriPath
@@ -17876,156 +17905,156 @@ function Test-MailboxPushover {
 
 $FunctionList = @(
     "Clear-EasCache",
-"Clear-Queue",
-"Connect-Mailcow",
-"Copy-DkimKey",
-"Disable-MailcowHelperArgumentCompleter",
-"Disconnect-Mailcow",
-"Enable-MailcowHelperArgumentCompleter",
-"Get-AddressRewriteBccMap",
-"Get-AddressRewriteRecipientMap",
-"Get-Admin",
-"Get-AliasDomain",
-"Get-AliasMail",
-"Get-AliasTimeLimited",
-"Get-AppPassword",
-"Get-BanList",
-"Get-DkimKey",
-"Get-Domain",
-"Get-DomainAdmin",
-"Get-DomainAntiSpamPolicy",
-"Get-DomainTemplate",
-"Get-Fail2BanConfig",
-"Get-ForwardingHost",
-"Get-IdentityProvider",
-"Get-Log",
-"Get-Mailbox",
-"Get-MailboxLastLogin",
-"Get-MailboxSpamScore",
-"Get-MailboxTemplate",
-"Get-MailcowHelperArgumentCompleterValue",
-"Get-MailcowHelperConfig",
-"Get-OauthClient",
-"Get-PasswordPolicy",
-"Get-Quarantine",
-"Get-Queue",
-"Get-Ratelimit",
-"Get-Resource",
-"Get-RoutingRelayHost",
-"Get-RoutingTransport",
-"Get-RspamdSetting",
-"Get-SieveFilter",
-"Get-SieveGlobalFilter",
-"Get-Status",
-"Get-SyncJob",
-"Get-TlsPolicyMap",
-"Initialize-MailcowHelperSession",
-"Invoke-MailcowApiRequest",
-"New-AddressRewriteBccMap",
-"New-AddressRewriteRecipientMap",
-"New-Admin",
-"New-AliasDomain",
-"New-AliasMail",
-"New-AliasTimeLimited",
-"New-AppPassword",
-"New-DkimKey",
-"New-Domain",
-"New-DomainAdmin",
-"New-DomainAntiSpamPolicy",
-"New-DomainTemplate",
-"New-ForwardingHost",
-"New-Mailbox",
-"New-MailboxTemplate",
-"New-MtaSts",
-"New-OauthClient",
-"New-Resource",
-"New-RoutingRelayHost",
-"New-RoutingTransport",
-"New-RspamdSetting",
-"New-SieveFilter",
-"New-SyncJob",
-"New-TlsPolicyMap",
-"Remove-AddressRewriteBccMap",
-"Remove-AddressRewriteRecipientMap",
-"Remove-Admin",
-"Remove-AliasDomain",
-"Remove-AliasMail",
-"Remove-AliasTimeLimited",
-"Remove-AppPassword",
-"Remove-DkimKey",
-"Remove-Domain",
-"Remove-DomainAdmin",
-"Remove-DomainAntiSpamPolicy",
-"Remove-DomainTag",
-"Remove-DomainTemplate",
-"Remove-ForwardingHost",
-"Remove-Mailbox",
-"Remove-MailboxTag",
-"Remove-MailboxTemplate",
-"Remove-OauthClient",
-"Remove-QuarantineItem",
-"Remove-Queue",
-"Remove-RateLimit",
-"Remove-Resource",
-"Remove-RoutingRelayHost",
-"Remove-RoutingTransport",
-"Remove-RspamdSetting",
-"Remove-SieveFilter",
-"Remove-SyncJob",
-"Remove-TlsPolicyMap",
-"Set-AddressRewriteBccMap",
-"Set-AddressRewriteRecipientMap",
-"Set-Admin",
-"Set-AliasDomain",
-"Set-AliasMail",
-"Set-AliasTimeLimited",
-"Set-AppPassword",
-"Set-Domain",
-"Set-DomainAdmin",
-"Set-DomainAdminAcl",
-"Set-DomainFooter",
-"Set-DomainTemplate",
-"Set-Fail2BanConfig",
-"Set-ForwardingHost",
-"Set-IdPGenericOIDC",
-"Set-IdPKeycloak",
-"Set-IdpLdap",
-"Set-Mailbox",
-"Set-MailboxCustomAttribute",
-"Set-MailboxPushover",
-"Set-MailboxQuarantineNotification",
-"Set-MailboxQuarantineNotificationCategory",
-"Set-MailboxSpamScore",
-"Set-MailboxTaggedMailHandling",
-"Set-MailboxTemplate",
-"Set-MailboxTlsPolicy",
-"Set-MailboxUserACL",
-"Set-MailcowHelperConfig",
-"Set-MtaSts",
-"Set-OauthClient",
-"Set-PasswordNotification",
-"Set-PasswordPolicy",
-"Set-QuotaNotification",
-"Set-RateLimit",
-"Set-Resource",
-"Set-RoutingRelayHost",
-"Set-RoutingTransport",
-"Set-RspamdSetting",
-"Set-SieveFilter",
-"Set-SieveGlobalFilter",
-"Set-SyncJob",
-"Set-TlsPolicyMap",
-"Test-MailboxPushover"
+    "Clear-Queue",
+    "Connect-Mailcow",
+    "Copy-DkimKey",
+    "Disable-MailcowHelperArgumentCompleter",
+    "Disconnect-Mailcow",
+    "Enable-MailcowHelperArgumentCompleter",
+    "Get-AddressRewriteBccMap",
+    "Get-AddressRewriteRecipientMap",
+    "Get-Admin",
+    "Get-AliasDomain",
+    "Get-AliasMail",
+    "Get-AliasTimeLimited",
+    "Get-AppPassword",
+    "Get-BanList",
+    "Get-DkimKey",
+    "Get-Domain",
+    "Get-DomainAdmin",
+    "Get-DomainAntiSpamPolicy",
+    "Get-DomainTemplate",
+    "Get-Fail2BanConfig",
+    "Get-ForwardingHost",
+    "Get-IdentityProvider",
+    "Get-Log",
+    "Get-Mailbox",
+    "Get-MailboxLastLogin",
+    "Get-MailboxSpamScore",
+    "Get-MailboxTemplate",
+    "Get-MailcowHelperArgumentCompleterValue",
+    "Get-MailcowHelperConfig",
+    "Get-OauthClient",
+    "Get-PasswordPolicy",
+    "Get-Quarantine",
+    "Get-Queue",
+    "Get-Ratelimit",
+    "Get-Resource",
+    "Get-RoutingRelayHost",
+    "Get-RoutingTransport",
+    "Get-RspamdSetting",
+    "Get-SieveFilter",
+    "Get-SieveGlobalFilter",
+    "Get-Status",
+    "Get-SyncJob",
+    "Get-TlsPolicyMap",
+    "Initialize-MailcowHelperSession",
+    "Invoke-MailcowApiRequest",
+    "New-AddressRewriteBccMap",
+    "New-AddressRewriteRecipientMap",
+    "New-Admin",
+    "New-AliasDomain",
+    "New-AliasMail",
+    "New-AliasTimeLimited",
+    "New-AppPassword",
+    "New-DkimKey",
+    "New-Domain",
+    "New-DomainAdmin",
+    "New-DomainAntiSpamPolicy",
+    "New-DomainTemplate",
+    "New-ForwardingHost",
+    "New-Mailbox",
+    "New-MailboxTemplate",
+    "New-MtaSts",
+    "New-OauthClient",
+    "New-Resource",
+    "New-RoutingRelayHost",
+    "New-RoutingTransport",
+    "New-RspamdSetting",
+    "New-SieveFilter",
+    "New-SyncJob",
+    "New-TlsPolicyMap",
+    "Remove-AddressRewriteBccMap",
+    "Remove-AddressRewriteRecipientMap",
+    "Remove-Admin",
+    "Remove-AliasDomain",
+    "Remove-AliasMail",
+    "Remove-AliasTimeLimited",
+    "Remove-AppPassword",
+    "Remove-DkimKey",
+    "Remove-Domain",
+    "Remove-DomainAdmin",
+    "Remove-DomainAntiSpamPolicy",
+    "Remove-DomainTag",
+    "Remove-DomainTemplate",
+    "Remove-ForwardingHost",
+    "Remove-Mailbox",
+    "Remove-MailboxTag",
+    "Remove-MailboxTemplate",
+    "Remove-OauthClient",
+    "Remove-QuarantineItem",
+    "Remove-Queue",
+    "Remove-RateLimit",
+    "Remove-Resource",
+    "Remove-RoutingRelayHost",
+    "Remove-RoutingTransport",
+    "Remove-RspamdSetting",
+    "Remove-SieveFilter",
+    "Remove-SyncJob",
+    "Remove-TlsPolicyMap",
+    "Set-AddressRewriteBccMap",
+    "Set-AddressRewriteRecipientMap",
+    "Set-Admin",
+    "Set-AliasDomain",
+    "Set-AliasMail",
+    "Set-AliasTimeLimited",
+    "Set-AppPassword",
+    "Set-Domain",
+    "Set-DomainAdmin",
+    "Set-DomainAdminAcl",
+    "Set-DomainFooter",
+    "Set-DomainTemplate",
+    "Set-Fail2BanConfig",
+    "Set-ForwardingHost",
+    "Set-IdPGenericOIDC",
+    "Set-IdPKeycloak",
+    "Set-IdpLdap",
+    "Set-Mailbox",
+    "Set-MailboxCustomAttribute",
+    "Set-MailboxPushover",
+    "Set-MailboxQuarantineNotification",
+    "Set-MailboxQuarantineNotificationCategory",
+    "Set-MailboxSpamScore",
+    "Set-MailboxTaggedMailHandling",
+    "Set-MailboxTemplate",
+    "Set-MailboxTlsPolicy",
+    "Set-MailboxUserACL",
+    "Set-MailcowHelperConfig",
+    "Set-MtaSts",
+    "Set-OauthClient",
+    "Set-PasswordNotification",
+    "Set-PasswordPolicy",
+    "Set-QuotaNotification",
+    "Set-RateLimit",
+    "Set-Resource",
+    "Set-RoutingRelayHost",
+    "Set-RoutingTransport",
+    "Set-RspamdSetting",
+    "Set-SieveFilter",
+    "Set-SieveGlobalFilter",
+    "Set-SyncJob",
+    "Set-TlsPolicyMap",
+    "Test-MailboxPushover"
 )
 
-foreach($Function in $FunctionList) {
+foreach ($Function in $FunctionList) {
     Export-ModuleMember -Function $Function -Alias *
 }
 
 
 
 # Define the types to export with type accelerators.
-$ExportableTypes =@(
+$ExportableTypes = @(
     [MailcowHelperArgumentCompleterAttribute],
     [MailcowHelperMailboxActiveState]
 )
@@ -18059,7 +18088,7 @@ foreach ($Type in $ExportableTypes) {
 }
 # Remove type accelerators when the module is removed.
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
-    foreach($Type in $ExportableTypes) {
+    foreach ($Type in $ExportableTypes) {
         $TypeAcceleratorsClass::Remove($Type.FullName)
     }
 }.GetNewClosure()

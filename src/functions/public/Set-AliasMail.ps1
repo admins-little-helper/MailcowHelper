@@ -36,13 +36,16 @@ function Set-AliasMail {
     .PARAMETER PrivateComment
         Specify a private comment.
 
+    .PARAMETER AllowSendAs
+        Allow the destination mailbox uesrs to SendAs the alias.
+
     .EXAMPLE
-        Set-MHMailAlias -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
+        Set-MHAliasMail -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
 
         Creates an alias "alias@example.com" for mailbox "mailbox@example.com". The alias will be visible for the user in SOGo.
 
     .EXAMPLE
-        Set-MHMailAlias -Alias "spam@example.com" -Destination "mailbox@example.com" LearnAsSpam
+        Set-MHAliasMail -Alias "spam@example.com" -Destination "mailbox@example.com" LearnAsSpam
 
         Creates an alias "spam@example.com" for mailbox "mailbox@example.com". Mails sent to the new alias will be treated as spam.
 
@@ -61,9 +64,9 @@ function Set-AliasMail {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, DefaultParameterSetName = "DestinationMailbox")]
     param(
-        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The  alias mail address to update.")]
+        [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The alias mail address to update.")]
         [MailcowHelperArgumentCompleter("Alias")]
         [Alias("Alias")]
         [System.Net.Mail.MailAddress]
@@ -104,7 +107,11 @@ function Set-AliasMail {
 
         [Parameter(Position = 9, Mandatory = $false, HelpMessage = "Specify a private comment.")]
         [System.String]
-        $PrivateComment
+        $PrivateComment,
+
+        [Parameter(Position = 10, Mandatory = $false, HelpMessage = "Allow the destination mailbox uesrs to SendAs the alias.")]
+        [System.Management.Automation.SwitchParameter]
+        $AllowSendAs
     )
 
     begin {
@@ -162,9 +169,14 @@ function Set-AliasMail {
             # Set the private comment for the alias.
             $Body.attr.private_comment = $PrivateComment
         }
+        if ($PSBoundParameters.ContainsKey("AllowSendAs")) {
+            # Set SenderAllowed option.
+            $Body.attr.sender_allowed = if ($AllowSendAs.IsPresent) { "1" } else { "0" }
+        }
 
         if ($PSCmdlet.ShouldProcess("alias [$($Identity.Address)].", "Update")) {
             Write-MailcowHelperLog -Message "Updating alias id [$($AliasId.Id)] with address [$($Identity.Address)]." -Level Information
+
             # Execute the API call.
             $InvokeMailcowApiRequestParams = @{
                 UriPath = $RequestUriPath

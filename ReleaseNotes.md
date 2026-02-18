@@ -4,11 +4,20 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.1.0 (2026-02-18)](#version-110-2026-02-18)
   - [Version 1.0.2 (2026-02-17)](#version-102-2026-02-17)
   - [Version 1.0.1 (2026-02-17)](#version-101-2026-02-17)
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.1.0 (2026-02-18)
+
+- Fixes
+  -  New-MHAlias: Corrected variable name.
+
+- Features
+  - New-/Set-MHAlias: Added parameter "AllowSendAs".
 
 ## Version 1.0.2 (2026-02-17)
 

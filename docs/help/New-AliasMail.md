@@ -104,7 +104,7 @@ Accept wildcard characters: False
 ```
 
 ### -Identity
-The new alias mail address to create.
+The alias mail address to create.
 
 ```yaml
 Type: MailAddress
