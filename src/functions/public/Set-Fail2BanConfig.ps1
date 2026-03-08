@@ -114,7 +114,7 @@ function Set-Fail2BanConfig {
 
     process {
         # First get the current Fail2Ban config.
-        $CurrentConfig = Get-Fail2BanConfig
+        $CurrentConfig = Get-Fail2BanConfig -Raw
 
         # Prepare the RequestUri path.
         $RequestUriPath = $UriPath
@@ -172,6 +172,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.blacklist = $Body.attr.blacklist.Trim()
         }
         if ($PSBoundParameters.ContainsKey("WhiteListIpAddress")) {
             switch ($ListOperation) {
@@ -200,6 +201,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.whitelist = $Body.attr.whitelist.Trim()
         }
         if ($PSBoundParameters.ContainsKey("WhiteListHostname")) {
             switch ($ListOperation) {
@@ -228,6 +230,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.whitelist = $Body.attr.whitelist.Trim()
         }
 
         if ($PSCmdlet.ShouldProcess("mailcow fail2ban config.", "Update")) {

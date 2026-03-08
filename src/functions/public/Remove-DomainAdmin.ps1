@@ -29,7 +29,7 @@ function Remove-DomainAdmin {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The username of the domain admin user account to be deleted.")]
         [MailcowHelperArgumentCompleter("DomainAdmin")]

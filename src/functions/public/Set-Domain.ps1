@@ -138,19 +138,23 @@ function Set-Domain {
         [System.Management.Automation.SwitchParameter]
         $RelayUnknownOnly,
 
-        [Parameter(Position = 12, Mandatory = $false)]
+        [Parameter(Position = 12, Mandatory = $false, HelpMessage = "Add one or more tags to the domain, which can be used for filtering.")]
         [System.String[]]
         $Tag,
 
-        [Parameter(Position = 13, Mandatory = $false)]
+        [Parameter(Position = 13, Mandatory = $false, HelpMessage = "Set the message rate limit for the domain.")]
         [ValidateRange(0, 9223372036854775807)]
         [System.Int64]
         $RateLimit = 10,
 
-        [Parameter(Position = 14, Mandatory = $false)]
+        [Parameter(Position = 14, Mandatory = $false, HelpMessage = "Set the message rate limit unit.")]
         [ValidateSet("Second", "Minute", "Hour", "Day")]
         [System.String]
-        $RateLimitPerUnit = "Seconds"
+        $RateLimitPerUnit = "Seconds",
+
+        [Parameter(Position = 15, Mandatory = $false, HelpMessage = "The id of the routing relay host to set for the domain.")]
+        [System.Int64]
+        $RelayHostId
     )
 
     begin {
@@ -215,6 +219,9 @@ function Set-Domain {
             }
             if (-not [System.String]::IsNullOrEmpty($Tag)) {
                 $Body.attr.tags = $Tag
+            }
+            if (-not [System.String]::IsNullOrEmpty($RelayHostId)) {
+                $Body.attr.relayhost = $RelayHostId
             }
 
             if ($PSCmdlet.ShouldProcess("domain [$IdentityItem].", "Update")) {

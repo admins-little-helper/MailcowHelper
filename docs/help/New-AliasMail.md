@@ -15,29 +15,29 @@ Add an alias mail address.
 ### DestinationMailbox
 ```
 New-MHAliasMail [-Identity] <MailAddress> [[-Destination] <MailAddress[]>] [-Enable] [-Internal] [-SOGoVisible]
- [[-PublicComment] <String>] [[-PrivateComment] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [[-PublicComment] <String>] [[-PrivateComment] <String>] [-AllowSendAs] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### DestinationDiscard
 ```
 New-MHAliasMail [-Identity] <MailAddress> [-SilentlyDiscard] [-Enable] [-Internal] [-SOGoVisible]
- [[-PublicComment] <String>] [[-PrivateComment] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [[-PublicComment] <String>] [[-PrivateComment] <String>] [-AllowSendAs] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### DestinationSpam
 ```
 New-MHAliasMail [-Identity] <MailAddress> [-LearnAsSpam] [-Enable] [-Internal] [-SOGoVisible]
- [[-PublicComment] <String>] [[-PrivateComment] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [[-PublicComment] <String>] [[-PrivateComment] <String>] [-AllowSendAs] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### DestinationHam
 ```
 New-MHAliasMail [-Identity] <MailAddress> [-LearnAsHam] [-Enable] [-Internal] [-SOGoVisible]
- [[-PublicComment] <String>] [[-PrivateComment] <String>] [-ProgressAction <ActionPreference>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+ [[-PublicComment] <String>] [[-PrivateComment] <String>] [-AllowSendAs] [-ProgressAction <ActionPreference>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -47,7 +47,7 @@ Add an alias mail address.
 
 ### EXAMPLE 1
 ```
-New-MHMailAlias -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
+New-MHAliasMail -Alias "alias@example.com" -Destination "mailbox@example.com" -SOGoVisible
 ```
 
 Creates an alias "alias@example.com" for mailbox "mailbox@example.com".
@@ -55,20 +55,44 @@ The alias will be visible for the user in SOGo.
 
 ### EXAMPLE 2
 ```
-New-MHMailAlias -Alias "spam@example.com" -Destination "mailbox@example.com" -LearnAsSpam
+New-MHAliasMail -Alias "alias2@example.com" -Destination "mailbox@example.com" -SOGoVisible -AllowSendAs
+```
+
+Creates alias "alias2@example.com" for mailbox "mailbox@example.com".
+The alias will be visible for the user in SOGo.
+The user of "mailbox@example.com" will get the permission to SendAs the alias.
+
+### EXAMPLE 3
+```
+New-MHAliasMail -Alias "spam@example.com" -Destination "mailbox@example.com" -LearnAsSpam
 ```
 
 Creates an alias "spam@example.com" for mailbox "mailbox@example.com".
 Mails sent to the new alias will be treated as spam.
 
-### EXAMPLE 3
+### EXAMPLE 4
 ```
-New-MHMailAlias -Alias "groupA@example.com" -Destination "user1@example.com", "user2@example.com"
+New-MHAliasMail -Alias "groupA@example.com" -Destination "user1@example.com", "user2@example.com"
 ```
 
 This creates an alias that acts like a distribution group because mails to the alias are forwarded to two mailboxes.
 
 ## PARAMETERS
+
+### -AllowSendAs
+Allow the destination mailbox uesrs to SendAs the alias.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Destination
 The destination mail address(es) for the new alias.
@@ -104,7 +128,7 @@ Accept wildcard characters: False
 ```
 
 ### -Identity
-The alias mail address to create.
+The new alias mail address to create.
 
 ```yaml
 Type: MailAddress

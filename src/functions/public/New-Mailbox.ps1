@@ -115,6 +115,7 @@ function New-Mailbox {
         $EnforceTlsOut,
 
         [Parameter(Position = 10, Mandatory = $false, HelpMessage = "The mailbox template to use.")]
+        [MailcowHelperArgumentCompleter("MailboxTemplate")]
         [System.String]
         $Template
     )

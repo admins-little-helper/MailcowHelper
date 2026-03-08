@@ -29,7 +29,7 @@ function Remove-DomainAntiSpamPolicy {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, HelpMessage = "The id of the policy to remove.")]
         [System.Int32[]]

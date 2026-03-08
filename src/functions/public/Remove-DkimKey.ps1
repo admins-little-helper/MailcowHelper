@@ -29,7 +29,7 @@ function Remove-DkimKey {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, HelpMessage = "The name of the domain for which to delete the DKIM key.")]
         [MailcowHelperArgumentCompleter("Domain")]

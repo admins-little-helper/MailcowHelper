@@ -17,7 +17,7 @@ Set-MHDomain [-Identity] <String[]> [[-Description] <String>] [-Enable] [[-MaxMa
  [[-MaxAliasCount] <Int32>] [[-DefaultMailboxQuotaMB] <Int64>] [[-MaxMailboxQuotaMB] <Int64>]
  [[-TotalDomainQuotaMB] <Int64>] [-GlobalAddressList] [-RelayThisDomain] [-RelayAllRecipients]
  [-RelayUnknownOnly] [[-Tag] <String[]>] [[-RateLimit] <Int64>] [[-RateLimitPerUnit] <String>]
- [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [[-RelayHostId] <Int64>] [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -215,6 +215,21 @@ Aliases:
 Required: False
 Position: 11
 Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RelayHostId
+The id of the routing relay host to set for the domain.
+
+```yaml
+Type: Int64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 16
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

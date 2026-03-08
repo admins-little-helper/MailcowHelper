@@ -38,7 +38,7 @@ function Remove-RateLimit {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(ParameterSetName = "Mailbox", Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The mail address of the mailbox for which to remove the rate-limit setting.")]
         [MailcowHelperArgumentCompleter("Mailbox")]

@@ -32,7 +32,7 @@ function Remove-AddressRewriteBccMap {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "Id number of BCC map to remove.")]
         [Alias("BccMapId")]

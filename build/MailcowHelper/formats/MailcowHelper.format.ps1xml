@@ -577,10 +577,6 @@
             <Alignment>Left</Alignment>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>DomainHName</Label>
-            <Alignment>Left</Alignment>
-          </TableColumnHeader>
-          <TableColumnHeader>
             <Label>Description</Label>
             <Alignment>Left</Alignment>
           </TableColumnHeader>
@@ -623,9 +619,6 @@
             <TableColumnItems>
               <TableColumnItem>
                 <PropertyName>DomainName</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>DomainHName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>

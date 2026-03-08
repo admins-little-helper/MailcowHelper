@@ -5979,7 +5979,7 @@ function New-AliasMail {
     }
 
     process {
-        foreach ($AliasItem in $Alias) {
+        foreach ($IdentityItem in $Identity) {
             # Prepare the RequestUri path.
             $RequestUriPath = $UriPath
 
@@ -5988,7 +5988,7 @@ function New-AliasMail {
                 # By default, activate the new alias.
                 active  = 1
                 # Set the Alias address.
-                address = $AliasItem.Address
+                address = $IdentityItem.Address
             }
             if ($PSBoundParameters.ContainsKey("Destination")) {
                 # Set the specified destination address.
@@ -6032,8 +6032,8 @@ function New-AliasMail {
                 $Body.sender_allowed = if ($AllowSendAs.IsPresent) { "1" } else { "0" }
             }
 
-            if ($PSCmdlet.ShouldProcess("alias [$AliasItem].", "Add")) {
-                Write-MailcowHelperLog -Message "Adding alias [$AliasItem]." -Level Information
+            if ($PSCmdlet.ShouldProcess("alias [$IdentityItem].", "Add")) {
+                Write-MailcowHelperLog -Message "Adding alias [$IdentityItem]." -Level Information
                 # Execute the API call.
                 $InvokeMailcowApiRequestParams = @{
                     UriPath = $RequestUriPath
@@ -7290,6 +7290,7 @@ function New-Mailbox {
         $EnforceTlsOut,
 
         [Parameter(Position = 10, Mandatory = $false, HelpMessage = "The mailbox template to use.")]
+        [MailcowHelperArgumentCompleter("MailboxTemplate")]
         [System.String]
         $Template
     )
@@ -8985,7 +8986,7 @@ function Remove-AddressRewriteBccMap {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "Id number of BCC map to remove.")]
         [Alias("BccMapId")]
@@ -9493,7 +9494,7 @@ function Remove-DkimKey {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, HelpMessage = "The name of the domain for which to delete the DKIM key.")]
         [MailcowHelperArgumentCompleter("Domain")]
@@ -9559,7 +9560,7 @@ function Remove-Domain {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The domain name to delete.")]
         [MailcowHelperArgumentCompleter("Domain")]
@@ -9626,7 +9627,7 @@ function Remove-DomainAdmin {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The username of the domain admin user account to be deleted.")]
         [MailcowHelperArgumentCompleter("DomainAdmin")]
@@ -9693,7 +9694,7 @@ function Remove-DomainAntiSpamPolicy {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(Position = 0, Mandatory = $true, HelpMessage = "The id of the policy to remove.")]
         [System.Int32[]]
@@ -10425,7 +10426,7 @@ function Remove-RateLimit {
     #>
 
     [OutputType([PSCustomObject])]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = "High")]
     param(
         [Parameter(ParameterSetName = "Mailbox", Position = 0, Mandatory = $true, ValueFromPipeline = $true, HelpMessage = "The mail address of the mailbox for which to remove the rate-limit setting.")]
         [MailcowHelperArgumentCompleter("Mailbox")]
@@ -11956,19 +11957,23 @@ function Set-Domain {
         [System.Management.Automation.SwitchParameter]
         $RelayUnknownOnly,
 
-        [Parameter(Position = 12, Mandatory = $false)]
+        [Parameter(Position = 12, Mandatory = $false, HelpMessage = "Add one or more tags to the domain, which can be used for filtering.")]
         [System.String[]]
         $Tag,
 
-        [Parameter(Position = 13, Mandatory = $false)]
+        [Parameter(Position = 13, Mandatory = $false, HelpMessage = "Set the message rate limit for the domain.")]
         [ValidateRange(0, 9223372036854775807)]
         [System.Int64]
         $RateLimit = 10,
 
-        [Parameter(Position = 14, Mandatory = $false)]
+        [Parameter(Position = 14, Mandatory = $false, HelpMessage = "Set the message rate limit unit.")]
         [ValidateSet("Second", "Minute", "Hour", "Day")]
         [System.String]
-        $RateLimitPerUnit = "Seconds"
+        $RateLimitPerUnit = "Seconds",
+
+        [Parameter(Position = 15, Mandatory = $false, HelpMessage = "The id of the routing relay host to set for the domain.")]
+        [System.Int64]
+        $RelayHostId
     )
 
     begin {
@@ -12033,6 +12038,9 @@ function Set-Domain {
             }
             if (-not [System.String]::IsNullOrEmpty($Tag)) {
                 $Body.attr.tags = $Tag
+            }
+            if (-not [System.String]::IsNullOrEmpty($RelayHostId)) {
+                $Body.attr.relayhost = $RelayHostId
             }
 
             if ($PSCmdlet.ShouldProcess("domain [$IdentityItem].", "Update")) {
@@ -12899,7 +12907,7 @@ function Set-Fail2BanConfig {
 
     process {
         # First get the current Fail2Ban config.
-        $CurrentConfig = Get-Fail2BanConfig
+        $CurrentConfig = Get-Fail2BanConfig -Raw
 
         # Prepare the RequestUri path.
         $RequestUriPath = $UriPath
@@ -12957,6 +12965,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.blacklist = $Body.attr.blacklist.Trim()
         }
         if ($PSBoundParameters.ContainsKey("WhiteListIpAddress")) {
             switch ($ListOperation) {
@@ -12985,6 +12994,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.whitelist = $Body.attr.whitelist.Trim()
         }
         if ($PSBoundParameters.ContainsKey("WhiteListHostname")) {
             switch ($ListOperation) {
@@ -13013,6 +13023,7 @@ function Set-Fail2BanConfig {
                     break
                 }
             }
+            $Body.attr.whitelist = $Body.attr.whitelist.Trim()
         }
 
         if ($PSCmdlet.ShouldProcess("mailcow fail2ban config.", "Update")) {
