@@ -121,6 +121,7 @@ function Get-Log {
                         }
                         UserAgent = $Item.ua
                         Username  = $Item.user
+                        IP        = $Item.ip
                         Service   = $Item.service
                     }
                     $ConvertedItem.PSObject.TypeNames.Insert(0, "MHLog$LogType")
