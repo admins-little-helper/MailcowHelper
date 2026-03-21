@@ -67,6 +67,7 @@ function Get-MailboxLastLogin {
                 # Prepare the result in a custom format.
                 $ConvertedResult = foreach ($Item in $Result.sasl) {
                     $ConvertedItem = [PSCustomObject]@{
+                        Mailbox         = $IdentityItem
                         DateTime        = if ($Item.datetime) { (Get-Date -Date $Item.datetime) }
                         Service         = $Item.service
                         RealIP          = $Item.real_rip

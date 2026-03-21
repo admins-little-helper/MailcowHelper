@@ -9,6 +9,10 @@
                 <AutoSize />
                 <TableHeaders>
                     <TableColumnHeader>
+                        <Label>Mailbox</Label>
+                        <Alignment>Left</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
                         <Label>DateTime</Label>
                         <Alignment>Left</Alignment>
                     </TableColumnHeader>
@@ -33,6 +37,9 @@
                     <TableRowEntry>
                         <Wrap />
                         <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Mailbox</PropertyName>
+                            </TableColumnItem>
                             <TableColumnItem>
                                 <PropertyName>DateTime</PropertyName>
                             </TableColumnItem>
