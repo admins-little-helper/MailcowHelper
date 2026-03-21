@@ -4,6 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.1.2 (2026-03-21)](#version-112-2026-03-21)
   - [Version 1.1.1 (2026-03-07)](#version-111-2026-03-07)
   - [Version 1.1.0 (2026-02-18)](#version-110-2026-02-18)
   - [Version 1.0.2 (2026-02-17)](#version-102-2026-02-17)
@@ -11,6 +12,12 @@
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.1.2 (2026-03-21)
+
+- Fixes
+  - Added missing property IP to output of Get-MHLog for Autodiscover log.
+  - Added property mailbox to output of Get-MHMailboxLastLogin.
 
 ## Version 1.1.1 (2026-03-07)
 
