@@ -13,7 +13,7 @@ Get mailcow server logs of the specified type.
 ## SYNTAX
 
 ```
-Get-MHLog [-Logtype] <String> [[-Count] <Decimal>] [-Raw] [-ProgressAction <ActionPreference>]
+Get-MHLog [-Logtype] <String> [[-Count] <Decimal>] [-SortDesending] [-Raw] [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 
@@ -31,10 +31,10 @@ Get the last 100 records from the Acme log.
 
 ### EXAMPLE 2
 ```
-Get-MHLog -LogType "Postfix"
+Get-MHLog -LogType "Postfix" -Raw
 ```
 
-Get records from the Postfix log.
+Get records from the Postfix log in raw format as returned by the REST API.
 By default the last 20 records are returned.
 
 ## PARAMETERS
@@ -89,6 +89,21 @@ Accept wildcard characters: False
 
 ### -Raw
 Return the result in raw format as returned by Invoke-WebRequest.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SortDesending
+Sort log output in descending order by date.
 
 ```yaml
 Type: SwitchParameter

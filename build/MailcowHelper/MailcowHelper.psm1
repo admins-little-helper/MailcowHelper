@@ -2733,6 +2733,9 @@ function Get-Log {
     .PARAMETER Count
         The number of logs records to return. This always returns the latest (newest) log records.
 
+    .PARAMETER SortDesending
+        Sort log output in descending order by date.
+
     .PARAMETER Raw
         Return the result in raw format as returned by Invoke-WebRequest.
 
@@ -2742,9 +2745,9 @@ function Get-Log {
         Get the last 100 records from the Acme log.
 
     .EXAMPLE
-        Get-MHLog -LogType "Postfix"
+        Get-MHLog -LogType "Postfix" -Raw
 
-        Get records from the Postfix log. By default the last 20 records are returned.
+        Get records from the Postfix log in raw format as returned by the REST API. By default the last 20 records are returned.
 
     .INPUTS
         System.String
@@ -2763,17 +2766,21 @@ function Get-Log {
     [OutputType([PSCustomObject])]
     [CmdletBinding()]
     param(
-        [Parameter(Position = 0, Mandatory = $true)]
+        [Parameter(Position = 0, Mandatory = $true, HelpMessage = "Specify the type of log to return.")]
         [ValidateSet("Acme", "Api", "Autodiscover", "Dovecot", "Netfilter", "Postfix", "RateLimited", "Rspamd-History", "Sogo", "Watchdog")]
         [System.String]
         $Logtype,
 
-        [Parameter(Position = 1, Mandatory = $false)]
+        [Parameter(Position = 1, Mandatory = $false, HelpMessage = "The number of logs records to return. This always returns the latest (newest) log records.")]
         [ValidateRange(1, 9223372036854775807)]
         [System.Decimal]
         $Count = 20,
 
-        [Parameter(Position = 2, Mandatory = $false, HelpMessage = "Return the result in raw format as returned by Invoke-WebRequest.")]
+        [Parameter(Position = 2, Mandatory = $false, HelpMessage = "Sort log output in descending order by date.")]
+        [System.Management.Automation.SwitchParameter]
+        $SortDesending,
+
+        [Parameter(Position = 3, Mandatory = $false, HelpMessage = "Return the result in raw format as returned by Invoke-WebRequest.")]
         [System.Management.Automation.SwitchParameter]
         $Raw
     )
@@ -2792,11 +2799,23 @@ function Get-Log {
         $Result
     }
     else {
+        $i = 0
+        $FormatColors = @{
+            RedWhite = "`e[41m{0}`e[0m" # Red background, white foreground
+            DarkRed  = "`e[91m{0}`e[0m"
+            Red      = "`e[31m{0}`e[0m"
+            Yellow   = "`e[33m{0}`e[0m"
+            Blue     = "`e[34m{0}`e[0m"
+            Cyan     = "`e[36m{0}`e[0m"
+            Green    = "`e[32m{0}`e[0m"
+            Magenta  = "`e[35m{0}`e[0m"
+        }
         switch ($Logtype) {
             "Acme" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -2808,12 +2827,13 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Api" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -2828,12 +2848,13 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Autodiscover" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID        = $i++
                         Logtype   = $LogType
                         DateTime  = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -2848,68 +2869,150 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Dovecot" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
+                    switch ($Item.priority) {
+                        "crit" {
+                            $ColorFormat = $FormatColors.RedWhite
+                            break
+                        }
+                        "err" {
+                            $ColorFormat = $FormatColors.DarkRed
+                            break
+                        }
+                        "warning" {
+                            $ColorFormat = $FormatColors.Yellow
+                            break
+                        }
+                        "info" {
+                            $ColorFormat = $FormatColors.Green
+                            break
+                        }
+                        "debug" {
+                            $ColorFormat = $FormatColors.Magenta
+                            break
+                        }
+                        default {
+                            $ColorFormat = "{0}"
+                        }
+                    }
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
                             $DateTimeUTC.ToLocalTime()
                         }
                         Program  = $Item.program
-                        Priority = $Item.priority
+                        Priority = $ColorFormat -f $Item.priority
                         Message  = $Item.message
                     }
                     $ConvertedItem.PSObject.TypeNames.Insert(0, "MHLog$LogType")
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Netfilter" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
+                    switch ($Item.priority) {
+                        "critical" {
+                            $ColorFormat = $FormatColors.RedWhite
+                            break
+                        }
+                        "error" {
+                            $ColorFormat = $FormatColors.DarkRed
+                            break
+                        }
+                        "warn" {
+                            $ColorFormat = $FormatColors.Yellow
+                            break
+                        }
+                        "info" {
+                            $ColorFormat = $FormatColors.Green
+                            break
+                        }
+                        "debug" {
+                            
+                            $ColorFormat = $FormatColors.Magenta
+                            break
+                        }
+                        default {
+                            # Default color
+                            $ColorFormat = "{0}"
+                        }
+                    }
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
                             $DateTimeUTC.ToLocalTime()
                         }
-                        Priority = $Item.priority
+                        Priority = $ColorFormat -f $Item.priority
                         Message  = $Item.message
                     }
                     $ConvertedItem.PSObject.TypeNames.Insert(0, "MHLog$LogType")
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Postfix" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
+                    switch ($Item.priority) {
+                        "crit" {
+                            $ColorFormat = $FormatColors.RedWhite
+                            break
+                        }
+                        "error" {
+                            $ColorFormat = $FormatColors.DarkRed
+                            break
+                        }
+                        "warn" {
+                            $ColorFormat = $FormatColors.Yellow
+                            break
+                        }
+                        "info" {
+                            $ColorFormat = $FormatColors.Green
+                            break
+                        }
+                        "debug" {
+                            $ColorFormat = $FormatColors.Magenta
+                            break
+                        }
+                        default {
+                            # Default color
+                            $ColorFormat = "{0}"
+                        }
+                    }
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
                             $DateTimeUTC.ToLocalTime()
                         }
                         Program  = $Item.program
-                        Priority = $Item.priority
+                        Priority = $ColorFormat -f $Item.priority
                         Message  = $Item.message
                     }
                     $ConvertedItem.PSObject.TypeNames.Insert(0, "MHLog$LogType")
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "RateLimited" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID            = $i++
                         Logtype       = $LogType
                         DateTime      = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -2932,12 +3035,13 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Rspamd-History" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID            = $i++
                         Logtype       = $LogType
                         DateTime      = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -2963,31 +3067,63 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Sogo" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
+                    switch ($Item.priority) {
+                        "crit" {
+                            $ColorFormat = $FormatColors.RedWhite
+                            break
+                        }
+                        "err" {
+                            $ColorFormat = $FormatColors.DarkRed
+                            break
+                        }
+                        "warning" {
+                            $ColorFormat = $FormatColors.Yellow
+                            break
+                        }
+                        "info" {
+                            $ColorFormat = $FormatColors.Green
+                            break
+                        }
+                        "notice" {
+                            $ColorFormat = $FormatColors.Cyan
+                            break
+                        }
+                        "debug" {
+                            $ColorFormat = $FormatColors.Magenta
+                            break
+                        }
+                        default {
+                            # Default color
+                            $ColorFormat = "{0}"
+                        }
+                    }
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
                             $DateTimeUTC.ToLocalTime()
                         }
                         Program  = $Item.program
-                        Priority = $Item.priority
+                        Priority = $ColorFormat -f $Item.priority
                         Message  = $Item.message
                     }
                     $ConvertedItem.PSObject.TypeNames.Insert(0, "MHLog$LogType")
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             "Watchdog" {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     $ConvertedItem = [PSCustomObject]@{
+                        ID       = $i++
                         Logtype  = $LogType
                         DateTime = if ($Item.time -ne 0) {
                             $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
@@ -3003,7 +3139,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult
+                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
             }
             default {
                 # Return the result in raw format.
