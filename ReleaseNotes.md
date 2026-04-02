@@ -4,7 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
-  - [Version 1.1.2 (2026-03-21)](#version-112-2026-03-21)
+  - [Version 1.2.0 (2026-04-02)](#version-120-2026-04-02)
   - [Version 1.1.1 (2026-03-07)](#version-111-2026-03-07)
   - [Version 1.1.0 (2026-02-18)](#version-110-2026-02-18)
   - [Version 1.0.2 (2026-02-17)](#version-102-2026-02-17)
@@ -13,11 +13,12 @@
 
 See [README](README.md) for general information.
 
-## Version 1.1.2 (2026-03-21)
+## Version 1.2.0 (2026-04-02)
 
-- Fixes
-  - Added missing property IP to output of Get-MHLog for Autodiscover log.
-  - Added property mailbox to output of Get-MHMailboxLastLogin.
+- Features
+  - Get-MHLog: Changed default sort order of log output to ascending by DateTime.
+  - Get-MHLog: Added parameter 'SortDescending' to allow specifying the sort order.
+  - Get-MHLog: Showing log priority in color based on priority for Dovecot, Netfilter, Postfix and Sogo log output.
 
 ## Version 1.1.1 (2026-03-07)
 
