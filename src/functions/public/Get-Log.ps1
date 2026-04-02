@@ -107,7 +107,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Api" {
                 # Prepare the result in custom format.
@@ -128,7 +128,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Autodiscover" {
                 # Prepare the result in custom format.
@@ -149,7 +149,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Dovecot" {
                 # Prepare the result in custom format.
@@ -194,7 +194,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Netfilter" {
                 # Prepare the result in custom format.
@@ -240,7 +240,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Postfix" {
                 # Prepare the result in custom format.
@@ -286,7 +286,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "RateLimited" {
                 # Prepare the result in custom format.
@@ -315,7 +315,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Rspamd-History" {
                 # Prepare the result in custom format.
@@ -347,7 +347,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Sogo" {
                 # Prepare the result in custom format.
@@ -397,7 +397,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Watchdog" {
                 # Prepare the result in custom format.
@@ -419,7 +419,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             default {
                 # Return the result in raw format.

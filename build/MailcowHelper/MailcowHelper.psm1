@@ -2,7 +2,7 @@
 # Adding Module variable, aka Pseudo-Namespace
 # More information can be found here: https://thedavecarroll.com/powershell/how-i-implement-module-variables/
 $MailcowHelper = [ordered]@{
-    ConnectParams       = @{}
+    ConnectParams           = @{}
     ArgumentCompleterConfig = @{
         EnableFor = @(
             "Alias",
@@ -2827,7 +2827,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Api" {
                 # Prepare the result in custom format.
@@ -2848,7 +2848,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Autodiscover" {
                 # Prepare the result in custom format.
@@ -2869,7 +2869,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Dovecot" {
                 # Prepare the result in custom format.
@@ -2914,7 +2914,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Netfilter" {
                 # Prepare the result in custom format.
@@ -2960,7 +2960,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Postfix" {
                 # Prepare the result in custom format.
@@ -3006,7 +3006,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "RateLimited" {
                 # Prepare the result in custom format.
@@ -3035,7 +3035,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Rspamd-History" {
                 # Prepare the result in custom format.
@@ -3067,7 +3067,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Sogo" {
                 # Prepare the result in custom format.
@@ -3117,7 +3117,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             "Watchdog" {
                 # Prepare the result in custom format.
@@ -3139,7 +3139,7 @@ function Get-Log {
                     $ConvertedItem
                 }
                 # Return the result in custom format.
-                $ConvertedResult | Sort-Object -Property ID -Descending:$SortDesending.IsPresent
+                $ConvertedResult | Sort-Object -Property ID -Descending:$(-not $SortDesending.IsPresent)
             }
             default {
                 # Return the result in raw format.
@@ -18054,156 +18054,156 @@ function Test-MailboxPushover {
 
 $FunctionList = @(
     "Clear-EasCache",
-"Clear-Queue",
-"Connect-Mailcow",
-"Copy-DkimKey",
-"Disable-MailcowHelperArgumentCompleter",
-"Disconnect-Mailcow",
-"Enable-MailcowHelperArgumentCompleter",
-"Get-AddressRewriteBccMap",
-"Get-AddressRewriteRecipientMap",
-"Get-Admin",
-"Get-AliasDomain",
-"Get-AliasMail",
-"Get-AliasTimeLimited",
-"Get-AppPassword",
-"Get-BanList",
-"Get-DkimKey",
-"Get-Domain",
-"Get-DomainAdmin",
-"Get-DomainAntiSpamPolicy",
-"Get-DomainTemplate",
-"Get-Fail2BanConfig",
-"Get-ForwardingHost",
-"Get-IdentityProvider",
-"Get-Log",
-"Get-Mailbox",
-"Get-MailboxLastLogin",
-"Get-MailboxSpamScore",
-"Get-MailboxTemplate",
-"Get-MailcowHelperArgumentCompleterValue",
-"Get-MailcowHelperConfig",
-"Get-OauthClient",
-"Get-PasswordPolicy",
-"Get-Quarantine",
-"Get-Queue",
-"Get-Ratelimit",
-"Get-Resource",
-"Get-RoutingRelayHost",
-"Get-RoutingTransport",
-"Get-RspamdSetting",
-"Get-SieveFilter",
-"Get-SieveGlobalFilter",
-"Get-Status",
-"Get-SyncJob",
-"Get-TlsPolicyMap",
-"Initialize-MailcowHelperSession",
-"Invoke-MailcowApiRequest",
-"New-AddressRewriteBccMap",
-"New-AddressRewriteRecipientMap",
-"New-Admin",
-"New-AliasDomain",
-"New-AliasMail",
-"New-AliasTimeLimited",
-"New-AppPassword",
-"New-DkimKey",
-"New-Domain",
-"New-DomainAdmin",
-"New-DomainAntiSpamPolicy",
-"New-DomainTemplate",
-"New-ForwardingHost",
-"New-Mailbox",
-"New-MailboxTemplate",
-"New-MtaSts",
-"New-OauthClient",
-"New-Resource",
-"New-RoutingRelayHost",
-"New-RoutingTransport",
-"New-RspamdSetting",
-"New-SieveFilter",
-"New-SyncJob",
-"New-TlsPolicyMap",
-"Remove-AddressRewriteBccMap",
-"Remove-AddressRewriteRecipientMap",
-"Remove-Admin",
-"Remove-AliasDomain",
-"Remove-AliasMail",
-"Remove-AliasTimeLimited",
-"Remove-AppPassword",
-"Remove-DkimKey",
-"Remove-Domain",
-"Remove-DomainAdmin",
-"Remove-DomainAntiSpamPolicy",
-"Remove-DomainTag",
-"Remove-DomainTemplate",
-"Remove-ForwardingHost",
-"Remove-Mailbox",
-"Remove-MailboxTag",
-"Remove-MailboxTemplate",
-"Remove-OauthClient",
-"Remove-QuarantineItem",
-"Remove-Queue",
-"Remove-RateLimit",
-"Remove-Resource",
-"Remove-RoutingRelayHost",
-"Remove-RoutingTransport",
-"Remove-RspamdSetting",
-"Remove-SieveFilter",
-"Remove-SyncJob",
-"Remove-TlsPolicyMap",
-"Set-AddressRewriteBccMap",
-"Set-AddressRewriteRecipientMap",
-"Set-Admin",
-"Set-AliasDomain",
-"Set-AliasMail",
-"Set-AliasTimeLimited",
-"Set-AppPassword",
-"Set-Domain",
-"Set-DomainAdmin",
-"Set-DomainAdminAcl",
-"Set-DomainFooter",
-"Set-DomainTemplate",
-"Set-Fail2BanConfig",
-"Set-ForwardingHost",
-"Set-IdPGenericOIDC",
-"Set-IdPKeycloak",
-"Set-IdpLdap",
-"Set-Mailbox",
-"Set-MailboxCustomAttribute",
-"Set-MailboxPushover",
-"Set-MailboxQuarantineNotification",
-"Set-MailboxQuarantineNotificationCategory",
-"Set-MailboxSpamScore",
-"Set-MailboxTaggedMailHandling",
-"Set-MailboxTemplate",
-"Set-MailboxTlsPolicy",
-"Set-MailboxUserACL",
-"Set-MailcowHelperConfig",
-"Set-MtaSts",
-"Set-OauthClient",
-"Set-PasswordNotification",
-"Set-PasswordPolicy",
-"Set-QuotaNotification",
-"Set-RateLimit",
-"Set-Resource",
-"Set-RoutingRelayHost",
-"Set-RoutingTransport",
-"Set-RspamdSetting",
-"Set-SieveFilter",
-"Set-SieveGlobalFilter",
-"Set-SyncJob",
-"Set-TlsPolicyMap",
-"Test-MailboxPushover"
+    "Clear-Queue",
+    "Connect-Mailcow",
+    "Copy-DkimKey",
+    "Disable-MailcowHelperArgumentCompleter",
+    "Disconnect-Mailcow",
+    "Enable-MailcowHelperArgumentCompleter",
+    "Get-AddressRewriteBccMap",
+    "Get-AddressRewriteRecipientMap",
+    "Get-Admin",
+    "Get-AliasDomain",
+    "Get-AliasMail",
+    "Get-AliasTimeLimited",
+    "Get-AppPassword",
+    "Get-BanList",
+    "Get-DkimKey",
+    "Get-Domain",
+    "Get-DomainAdmin",
+    "Get-DomainAntiSpamPolicy",
+    "Get-DomainTemplate",
+    "Get-Fail2BanConfig",
+    "Get-ForwardingHost",
+    "Get-IdentityProvider",
+    "Get-Log",
+    "Get-Mailbox",
+    "Get-MailboxLastLogin",
+    "Get-MailboxSpamScore",
+    "Get-MailboxTemplate",
+    "Get-MailcowHelperArgumentCompleterValue",
+    "Get-MailcowHelperConfig",
+    "Get-OauthClient",
+    "Get-PasswordPolicy",
+    "Get-Quarantine",
+    "Get-Queue",
+    "Get-Ratelimit",
+    "Get-Resource",
+    "Get-RoutingRelayHost",
+    "Get-RoutingTransport",
+    "Get-RspamdSetting",
+    "Get-SieveFilter",
+    "Get-SieveGlobalFilter",
+    "Get-Status",
+    "Get-SyncJob",
+    "Get-TlsPolicyMap",
+    "Initialize-MailcowHelperSession",
+    "Invoke-MailcowApiRequest",
+    "New-AddressRewriteBccMap",
+    "New-AddressRewriteRecipientMap",
+    "New-Admin",
+    "New-AliasDomain",
+    "New-AliasMail",
+    "New-AliasTimeLimited",
+    "New-AppPassword",
+    "New-DkimKey",
+    "New-Domain",
+    "New-DomainAdmin",
+    "New-DomainAntiSpamPolicy",
+    "New-DomainTemplate",
+    "New-ForwardingHost",
+    "New-Mailbox",
+    "New-MailboxTemplate",
+    "New-MtaSts",
+    "New-OauthClient",
+    "New-Resource",
+    "New-RoutingRelayHost",
+    "New-RoutingTransport",
+    "New-RspamdSetting",
+    "New-SieveFilter",
+    "New-SyncJob",
+    "New-TlsPolicyMap",
+    "Remove-AddressRewriteBccMap",
+    "Remove-AddressRewriteRecipientMap",
+    "Remove-Admin",
+    "Remove-AliasDomain",
+    "Remove-AliasMail",
+    "Remove-AliasTimeLimited",
+    "Remove-AppPassword",
+    "Remove-DkimKey",
+    "Remove-Domain",
+    "Remove-DomainAdmin",
+    "Remove-DomainAntiSpamPolicy",
+    "Remove-DomainTag",
+    "Remove-DomainTemplate",
+    "Remove-ForwardingHost",
+    "Remove-Mailbox",
+    "Remove-MailboxTag",
+    "Remove-MailboxTemplate",
+    "Remove-OauthClient",
+    "Remove-QuarantineItem",
+    "Remove-Queue",
+    "Remove-RateLimit",
+    "Remove-Resource",
+    "Remove-RoutingRelayHost",
+    "Remove-RoutingTransport",
+    "Remove-RspamdSetting",
+    "Remove-SieveFilter",
+    "Remove-SyncJob",
+    "Remove-TlsPolicyMap",
+    "Set-AddressRewriteBccMap",
+    "Set-AddressRewriteRecipientMap",
+    "Set-Admin",
+    "Set-AliasDomain",
+    "Set-AliasMail",
+    "Set-AliasTimeLimited",
+    "Set-AppPassword",
+    "Set-Domain",
+    "Set-DomainAdmin",
+    "Set-DomainAdminAcl",
+    "Set-DomainFooter",
+    "Set-DomainTemplate",
+    "Set-Fail2BanConfig",
+    "Set-ForwardingHost",
+    "Set-IdPGenericOIDC",
+    "Set-IdPKeycloak",
+    "Set-IdpLdap",
+    "Set-Mailbox",
+    "Set-MailboxCustomAttribute",
+    "Set-MailboxPushover",
+    "Set-MailboxQuarantineNotification",
+    "Set-MailboxQuarantineNotificationCategory",
+    "Set-MailboxSpamScore",
+    "Set-MailboxTaggedMailHandling",
+    "Set-MailboxTemplate",
+    "Set-MailboxTlsPolicy",
+    "Set-MailboxUserACL",
+    "Set-MailcowHelperConfig",
+    "Set-MtaSts",
+    "Set-OauthClient",
+    "Set-PasswordNotification",
+    "Set-PasswordPolicy",
+    "Set-QuotaNotification",
+    "Set-RateLimit",
+    "Set-Resource",
+    "Set-RoutingRelayHost",
+    "Set-RoutingTransport",
+    "Set-RspamdSetting",
+    "Set-SieveFilter",
+    "Set-SieveGlobalFilter",
+    "Set-SyncJob",
+    "Set-TlsPolicyMap",
+    "Test-MailboxPushover"
 )
 
-foreach($Function in $FunctionList) {
+foreach ($Function in $FunctionList) {
     Export-ModuleMember -Function $Function -Alias *
 }
 
 
 
 # Define the types to export with type accelerators.
-$ExportableTypes =@(
+$ExportableTypes = @(
     [MailcowHelperArgumentCompleterAttribute],
     [MailcowHelperMailboxActiveState]
 )
@@ -18237,7 +18237,7 @@ foreach ($Type in $ExportableTypes) {
 }
 # Remove type accelerators when the module is removed.
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
-    foreach($Type in $ExportableTypes) {
+    foreach ($Type in $ExportableTypes) {
         $TypeAcceleratorsClass::Remove($Type.FullName)
     }
 }.GetNewClosure()

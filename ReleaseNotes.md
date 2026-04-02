@@ -4,6 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.2.1 (2026-04-02)](#version-121-2026-04-02)
   - [Version 1.2.0 (2026-04-02)](#version-120-2026-04-02)
   - [Version 1.1.1 (2026-03-07)](#version-111-2026-03-07)
   - [Version 1.1.0 (2026-02-18)](#version-110-2026-02-18)
@@ -12,6 +13,10 @@
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.2.1 (2026-04-02)
+
+- Fix: Sort order of Get-MHLog is now really as intended.
 
 ## Version 1.2.0 (2026-04-02)
 
