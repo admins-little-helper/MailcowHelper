@@ -16,8 +16,8 @@ The code is provided "as-is". Use on your own risk.
 
 - PowerShell 7.5.4 or later
   - Earlier versions might work, but have not been tested.
-- A mailcow server instance.
-- An API key for your mailcow server instance with at least read access.
+- A mailcow server.
+- An API key for your mailcow server with at least read access (for all ```Get-*``` functions). Write access required for all ```New-*```, ```Remove-*``` and ```Set-*``` functions.
 
 ### How to install
 
@@ -33,7 +33,7 @@ Import-Module -Name MailcowHelper
 Connect-MHMailcow -ComputerName mail.example.com -ApiKey ABCDEF-GHIJKL-MNOPQR-STUVWX-YZ1234
 ```
 
-Then for example to get a list of domains configured on your mailcow server, run this:
+For example, to get a list of domains configured on your mailcow server, run this:
 
 ```PowerShell
 Get-MHDomain
@@ -50,8 +50,8 @@ example2.com  example2.com  Example               50           400         7    
 
 ```
 
-Once connected, you can save the connetion parameters and the [argument completer status](#tab-completion--custom-argument-completer) in a json file and re-use it later.  
-Just run ```Set-MHMailcowHelperConfig```. By default the config will be saved in ```$env:USERPROFILE\.MailcowHelper.json```. Using the ```-Path``` parameter you can save it anywhere else.
+Once connected, you can save the connection parameters and the [argument completer status](#tab-completion--custom-argument-completer) in a json file and re-use it later.  
+Run ```Set-MHMailcowHelperConfig``` to save the parameters used to connect in the previous step. By default the config will be saved in ```$env:USERPROFILE\.MailcowHelper.json```. You can set a custom filepath using the ```-Path``` parameter to save wherever you like.
 
 ```PowerShell
 # Save the config in the default path:
@@ -64,14 +64,14 @@ Set-MHMailcowHelperConfig -Path "C:\Admin\MyMailcowConfig.json"
 **Important**  
 The API key is also stored in the file as secure string. This means: it can only be restored under the same useraccount on the same machine.
 
-After you have saved your connection paramaters, you can re-use it like this:
+After the saved, you can re-use it like this:
 
 ```PowerShell
 # Connect using a previously saved config in the default path $env:USERPROFILE\.MailcowHelper.json
 Connect-MHMailcow -LoadConfig
 ```
 
-Or like this if you want to specify the filepath
+Or like this to specify the filepath:
 
 ```PowerShell
 # Connect using a previously saved config from a custom filepath.
@@ -100,8 +100,8 @@ Here's an example of how this works:
 
 ![tab-completion-example](./docs/images/tab_completion_example_1.gif)
 
-Please note: The values for the parameter types listed above are loaded automatically every time when executing ```Connect-MHMailcow```.
-It is possible to disable argument completion for all or for specific types. Just use ```Disable-MHMailcowHelperArgumentCompleter```, respectively ```Enable-MHMailcowHelperArgumentCompleter``` to enable it again.
+Please note: The values for the tab completion on parameters like 'Mailbox' or 'Domain' are loaded automatically every time when executing ```Connect-MHMailcow```.
+It is possible to disable argument completion for all or for specific types. Use ```Disable-MHMailcowHelperArgumentCompleter```, respectively ```Enable-MHMailcowHelperArgumentCompleter``` to enable it again.
 
 ### Module Prefix
 
