@@ -131,7 +131,7 @@ function Set-Fail2BanConfig {
             $Body.attr.ban_time_increment = if ($BanTimeIncrement.IsPresent) { "1" } else { "0" }
         }
         if ($PSBoundParameters.ContainsKey("MaxBanTime")) {
-            $Body.attr.max_ban_time = $MaxBanTime.ToString
+            $Body.attr.max_ban_time = $MaxBanTime.ToString()
         }
         if ($PSBoundParameters.ContainsKey("MaxAttempts")) {
             $Body.attr.max_attempts = $MaxAttempts.ToString()
