@@ -13,7 +13,7 @@ Updates the spam score for one or more mailboxes.
 ## SYNTAX
 
 ```
-Set-MHMailboxSpamScore [-Identity] <MailAddress[]> [[-SpamScoreLow] <Int32>] [[-SpamScoreHigh] <Int32>]
+Set-MHMailboxSpamScore [-Identity] <MailAddress[]> [[-SpamScoreLow] <Single>] [[-SpamScoreHigh] <Single>]
  [-ProgressAction <ActionPreference>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -65,7 +65,7 @@ Accept wildcard characters: False
 The high spam score value.
 
 ```yaml
-Type: Int32
+Type: Single
 Parameter Sets: (All)
 Aliases:
 
@@ -80,7 +80,7 @@ Accept wildcard characters: False
 The low spam score value.
 
 ```yaml
-Type: Int32
+Type: Single
 Parameter Sets: (All)
 Aliases:
 

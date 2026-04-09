@@ -13,7 +13,7 @@ Get ban list entries from the fail2ban service.
 ## SYNTAX
 
 ```
-Get-MHBanList [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-MHBanList [-Raw] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -43,6 +43,21 @@ Aliases: proga
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Raw
+Return the result in raw format as returned by Invoke-WebRequest.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

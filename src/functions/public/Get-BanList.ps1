@@ -7,6 +7,9 @@ function Get-BanList {
         Get ban list entries from the fail2ban service.
         This function is not using the mailcow rest API. Instead it calls the fail2ban banlist URI which can be retried using the mailcow REST API.
 
+    .PARAMETER Raw
+        Return the result in raw format as returned by Invoke-WebRequest.
+
     .EXAMPLE
         Get-MHBanList
 

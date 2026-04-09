@@ -4,6 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.3.0 (2026-04-09)](#version-130-2026-04-09)
   - [Version 1.2.1 (2026-04-02)](#version-121-2026-04-02)
   - [Version 1.2.0 (2026-04-02)](#version-120-2026-04-02)
   - [Version 1.1.1 (2026-03-07)](#version-111-2026-03-07)
@@ -13,6 +14,17 @@
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.3.0 (2026-04-09)
+
+- Fix:
+  - Set-MHMailboxSpamScore: Corrected datatype for 'SpamScoreLow' and 'SpamScoreHigh' paramters from Integer to Single.
+  - Set-MHFail2BanConfig: Fixed setting max_ban_time to a correct value.
+  - Get-MHLog: Fixed color for netfilter 'crit' log records.
+
+- Feature:
+  - Allow debug output of JSON body of a web request by setting the variable '$MailcowDebug' to $true.
+  - Get-MHBanList: Added attribute 'PermantBan' to the list of banned IPs to see which IPs have been banned permanently versus dynamically/temporarily.
 
 ## Version 1.2.1 (2026-04-02)
 
