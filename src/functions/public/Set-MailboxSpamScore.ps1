@@ -45,12 +45,12 @@ function Set-MailboxSpamScore {
 
         [Parameter(Position = 1, Mandatory = $false, HelpMessage = "The low spam score value.")]
         [ValidateRange(0, 5000)]
-        [System.Int32]
+        [System.Single]
         $SpamScoreLow = 8,
 
         [Parameter(Position = 1, Mandatory = $false, HelpMessage = "The high spam score value.")]
         [ValidateRange(0, 5000)]
-        [System.Int32]
+        [System.Single]
         $SpamScoreHigh = 15
     )
 
