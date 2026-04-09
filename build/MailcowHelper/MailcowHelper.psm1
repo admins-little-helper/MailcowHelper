@@ -1794,6 +1794,9 @@ function Get-BanList {
         Get ban list entries from the fail2ban service.
         This function is not using the mailcow rest API. Instead it calls the fail2ban banlist URI which can be retried using the mailcow REST API.
 
+    .PARAMETER Raw
+        Return the result in raw format as returned by Invoke-WebRequest.
+
     .EXAMPLE
         Get-MHBanList
 
@@ -1815,7 +1818,11 @@ function Get-BanList {
 
     [OutputType([PSCustomObject])]
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Position = 0, Mandatory = $false, HelpMessage = "If specified, return the raw content data.")]
+        [System.Management.Automation.SwitchParameter]
+        $Raw
+    )
 
     # Get the current Fail2Ban config which includes the banlist_id value that is required to get the banlist.
     $Fail2BanConfig = Get-Fail2BanConfig -Raw
@@ -1835,7 +1842,29 @@ function Get-BanList {
                 }
                 else {
                     Write-MailcowHelperLog -Message "Connection successful."
-                    $Result.Content
+
+                    if ($Raw.IsPresent) {
+                        # Return the result in raw format.
+                        # Note: This is a single string, not an array of strings where each line represents an element in the array.
+                        $Result.Content
+                    }
+                    else {
+                        # Prepare the result in a custom format.
+                        $ResultLines = $Result.Content -split "`n"
+                        $PermanentBannedIps = $Fail2BanConfig.blacklist -split "`n"
+                        Write-MailcowHelperLog -Message "Returned [$($Resultlines.Count)] records."
+
+                        $ConvertedResult = foreach ($Item in $ResultLines) {
+                            $ConvertedItem = [PSCustomObject]@{
+                                IP           = $Item
+                                PermanentBan = ($PermanentBannedIps -contains $Item)
+                            }
+                            $ConvertedItem.PSObject.TypeNames.Insert(0, "MHBanList")
+                            $ConvertedItem
+                        }
+                        # Return the result in custom format.
+                        $ConvertedResult | Sort-Object -Property IP
+                    }
                 }
                 break
             }
@@ -2920,7 +2949,7 @@ function Get-Log {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     switch ($Item.priority) {
-                        "critical" {
+                        "crit" {
                             $ColorFormat = $FormatColors.RedWhite
                             break
                         }
@@ -5545,6 +5574,11 @@ function Invoke-MailcowApiRequest {
         if ($null -ne $Body) {
             # Append body as JSON string.
             $InvokeWebRequestParams.Body = $Body | ConvertTo-Json -Depth 5
+
+            if ($MailcowHelperDebug) {
+                $BodyString = $Body | ConvertTo-Json -Depth 5
+                Write-MailcowHelperLog -Message "Body JSON string: `r`n$BodyString"
+            }
         }
 
         try {
@@ -13062,7 +13096,7 @@ function Set-Fail2BanConfig {
             $Body.attr.ban_time_increment = if ($BanTimeIncrement.IsPresent) { "1" } else { "0" }
         }
         if ($PSBoundParameters.ContainsKey("MaxBanTime")) {
-            $Body.attr.max_ban_time = $MaxBanTime.ToString
+            $Body.attr.max_ban_time = $MaxBanTime.ToString()
         }
         if ($PSBoundParameters.ContainsKey("MaxAttempts")) {
             $Body.attr.max_attempts = $MaxAttempts.ToString()
@@ -14910,12 +14944,12 @@ function Set-MailboxSpamScore {
 
         [Parameter(Position = 1, Mandatory = $false, HelpMessage = "The low spam score value.")]
         [ValidateRange(0, 5000)]
-        [System.Int32]
+        [System.Single]
         $SpamScoreLow = 8,
 
         [Parameter(Position = 1, Mandatory = $false, HelpMessage = "The high spam score value.")]
         [ValidateRange(0, 5000)]
-        [System.Int32]
+        [System.Single]
         $SpamScoreHigh = 15
     )
 

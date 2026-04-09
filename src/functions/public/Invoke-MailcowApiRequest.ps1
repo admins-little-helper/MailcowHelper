@@ -117,6 +117,11 @@ function Invoke-MailcowApiRequest {
         if ($null -ne $Body) {
             # Append body as JSON string.
             $InvokeWebRequestParams.Body = $Body | ConvertTo-Json -Depth 5
+
+            if ($MailcowHelperDebug) {
+                $BodyString = $Body | ConvertTo-Json -Depth 5
+                Write-MailcowHelperLog -Message "Body JSON string: `r`n$BodyString"
+            }
         }
 
         try {

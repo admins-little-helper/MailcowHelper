@@ -7,6 +7,9 @@ function Get-BanList {
         Get ban list entries from the fail2ban service.
         This function is not using the mailcow rest API. Instead it calls the fail2ban banlist URI which can be retried using the mailcow REST API.
 
+    .PARAMETER Raw
+        Return the result in raw format as returned by Invoke-WebRequest.
+
     .EXAMPLE
         Get-MHBanList
 
@@ -28,7 +31,11 @@ function Get-BanList {
 
     [OutputType([PSCustomObject])]
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Position = 0, Mandatory = $false, HelpMessage = "If specified, return the raw content data.")]
+        [System.Management.Automation.SwitchParameter]
+        $Raw
+    )
 
     # Get the current Fail2Ban config which includes the banlist_id value that is required to get the banlist.
     $Fail2BanConfig = Get-Fail2BanConfig -Raw
@@ -48,7 +55,29 @@ function Get-BanList {
                 }
                 else {
                     Write-MailcowHelperLog -Message "Connection successful."
-                    $Result.Content
+
+                    if ($Raw.IsPresent) {
+                        # Return the result in raw format.
+                        # Note: This is a single string, not an array of strings where each line represents an element in the array.
+                        $Result.Content
+                    }
+                    else {
+                        # Prepare the result in a custom format.
+                        $ResultLines = $Result.Content -split "`n"
+                        $PermanentBannedIps = $Fail2BanConfig.blacklist -split "`n"
+                        Write-MailcowHelperLog -Message "Returned [$($Resultlines.Count)] records."
+
+                        $ConvertedResult = foreach ($Item in $ResultLines) {
+                            $ConvertedItem = [PSCustomObject]@{
+                                IP           = $Item
+                                PermanentBan = ($PermanentBannedIps -contains $Item)
+                            }
+                            $ConvertedItem.PSObject.TypeNames.Insert(0, "MHBanList")
+                            $ConvertedItem
+                        }
+                        # Return the result in custom format.
+                        $ConvertedResult | Sort-Object -Property IP
+                    }
                 }
                 break
             }
