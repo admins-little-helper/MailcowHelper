@@ -200,7 +200,7 @@ function Get-Log {
                 # Prepare the result in custom format.
                 $ConvertedResult = foreach ($Item in $Result) {
                     switch ($Item.priority) {
-                        "critical" {
+                        "crit" {
                             $ColorFormat = $FormatColors.RedWhite
                             break
                         }
