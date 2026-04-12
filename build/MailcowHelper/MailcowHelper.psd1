@@ -57,50 +57,14 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    ScriptsToProcess     = @(
-        'classes\MailcowHelperArgumentCompleterAttribute.ps1'
-        'classes\MailcowHelperMailboxActiveState.ps1'
-    )
+    ScriptsToProcess     = @()
 
     # Type files (.ps1xml) to be loaded when importing this module
     TypesToProcess       = @()
 
     # Format files (.ps1xml) to be loaded when importing this module
     FormatsToProcess     = @(
-        "formats\MHAddressRewriteBccMap.format.ps1xml",
-        "formats\MHAddressRewriteRecipientMap.format.ps1xml",
-        "formats\MHAdmin.format.ps1xml",
-        "formats\MHAlias.format.ps1xml",
-        "formats\MHAliasDomain.format.ps1xml",
-        "formats\MHAliasTimeLimited.format.ps1xml",
-        "formats\MHAppPassword.format.ps1xml",
-        "formats\MHAppPassword.format.ps1xml",
-        "formats\MHDomain.format.ps1xml",
-        "formats\MHDomainAdmin.format.ps1xml",
-        "formats\MHDomainAntiSpamPolicy.format.ps1xml",
-        "formats\MHDomainTemplate.format.ps1xml",
-        "formats\MHFail2BanConfig.format.ps1xml",
-        "formats\MHForwardingHost.format.ps1xml",
-        "formats\MHIdentityProvider.format.ps1xml",
-        "formats\MHLog.format.ps1xml",
-        "formats\MHMailbox.format.ps1xml",
-        "formats\MHMailboxLastLogin.format.ps1xml",
-        "formats\MHMailboxSpamScore.format.ps1xml",
-        "formats\MHMailboxTemplate.format.ps1xml",
-        "formats\MHOauthClient.format.ps1xml",
-        "formats\MHPasswordPolicy.format.ps1xml",
-        "formats\MHQuarantine.format.ps1xml",
-        "formats\MHQueue.format.ps1xml",
-        "formats\MHRatelimit.format.ps1xml",
-        "formats\MHResource.format.ps1xml",
-        "formats\MHRoutingRelayHost.format.ps1xml",
-        "formats\MHRoutingTransport.format.ps1xml",
-        "formats\MHRspamdSetting.format.ps1xml",
-        "formats\MHSieveFilter.format.ps1xml",
-        "formats\MHSieveGlobalFilter.format.ps1xml",
-        "formats\MHStatus.format.ps1xml",
-        "formats\MHSyncJob.format.ps1xml",
-        "formats\MHTlsPolicyMap.format.ps1xml"
+        "formats\MailcowHelper.format.ps1xml"
     )
 
     # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
