@@ -4,6 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.3.1 (2026-04-12)](#version-131-2026-04-12)
   - [Version 1.3.0 (2026-04-09)](#version-130-2026-04-09)
   - [Version 1.2.1 (2026-04-02)](#version-121-2026-04-02)
   - [Version 1.2.0 (2026-04-02)](#version-120-2026-04-02)
@@ -14,6 +15,11 @@
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.3.1 (2026-04-12)
+
+- Fix:
+  - Get-MHFail2BanConfig: Fixed output to also show PermanentBans and ActiveBans. Also improved the output of Whitelist and BlackList IP address lists.
 
 ## Version 1.3.0 (2026-04-09)
 
