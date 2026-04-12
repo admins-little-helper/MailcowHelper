@@ -42,6 +42,12 @@
                             <ListItem>
                                 <PropertyName>BlackList</PropertyName>
                             </ListItem>
+                            <ListItem>
+                                <PropertyName>PermanentBans</PropertyName>
+                            </ListItem>
+                            <ListItem>
+                                <PropertyName>ActiveBans</PropertyName>
+                            </ListItem>
                         </ListItems>
                     </ListEntry>
                 </ListEntries>

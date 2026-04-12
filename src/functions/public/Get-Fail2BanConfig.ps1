@@ -59,8 +59,65 @@ function Get-Fail2BanConfig {
                 Regex            = $Item.regex
                 WhiteList        = $Item.whitelist
                 BlackList        = $Item.blacklist
-
+                PermanentBans    = $null
+                ActiveBans       = $null
             }
+
+            # Process whitelist.
+            if ($null -ne $Item.whitelist) {
+                $ConvertedItem.WhiteList = $Item.whitelist -split "`n"
+            }
+
+            # Process blacklist.
+            if ($null -ne $Item.Blacklist) {
+                $ConvertedItem.Blacklist = $Item.blacklist -split "`n"
+            }
+
+            # Process permanent bans.
+            if ($null -ne $Item.perm_bans) {
+                $ConvertedItem.PermanentBans = foreach ($PermanentBanItem in $Item.perm_bans) {
+                    # Return the information as custom object.
+                    [PSCustomObject]@{
+                        NetworkAddress = $PermanentBanItem.network
+                        IPAddress      = $PermanentBanItem.ip
+                    }
+                }
+            }
+            else {
+                Write-MailcowHelperLog -Message "No permanent bans returned."
+                if ($null -ne $Item.blacklist) {
+                    # Something is wrong - if the blacklist contains entries (=permanent bans), then "perm_bans" should also
+                    # have entries (except a short moment after (re-)starting the netfilter container).
+                    Write-MailcowHelperLog -Message "Blacklist has entries, while 'PermanentBans' does not. Check your configuration!" -Level Warning
+                }
+            }
+
+            # Process active bans.
+            if ($null -ne $Item.active_bans) {
+                $ConvertedItem.ActiveBans = foreach ($ActiveBanItem in $Item.active_bans) {
+                    # Extract hours, minutes and seconds value from timespan string.
+                    try {
+                        $BannedTimespanValues = ($ActiveBanItem.banned_until -replace "[hms]", "") -split " "
+                        $BannedTimeSpan = New-TimeSpan -Hours $BannedTimespanValues[0] -Minutes $BannedTimespanValues[1] -Seconds $BannedTimespanValues[2]
+                    }
+                    catch {
+                        $BannedTimeSpan = New-TimeSpan -Hours 0
+                    }
+
+                    # Return the calculated information.
+                    [PSCustomObject]@{
+                        NetworkAddress = $ActiveBanItem.network
+                        IPAddress      = $ActiveBanItem.ip
+                        QueuedForUnban = [System.Boolean]$ActiveBanItem.queued_for_unban
+                        BannedUntil    = $ActiveBanItem.banned_until
+                        BannedUntilDT  = (Get-Date).Add($BannedTimeSpan)
+                    }
+                }
+            }
+            else {
+                Write-MailcowHelperLog -Message "No active bans returned."
+            }
+
             $ConvertedItem.PSObject.TypeNames.Insert(0, "MHFail2BanConfig")
             $ConvertedItem
         }
