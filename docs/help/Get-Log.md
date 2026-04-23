@@ -58,7 +58,7 @@ Accept wildcard characters: False
 ### -Logtype
 Specify the type of log to return.
 Supported values are:
-Acme, Api, Autodiscover, Dovecot, Netfilter, Postfix, RateLimited, Rspamd-History, Sogo, Watchdog
+Acme, Api, Autodiscover, Cron, Dovecot, Netfilter, Postfix, RateLimited, Rspamd-History, Rspamd-Stats, Sasl, Sogo, UI, Watchdog
 
 ```yaml
 Type: String
