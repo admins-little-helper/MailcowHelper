@@ -368,8 +368,8 @@ function Get-Log {
                     $ConvertedItem = [PSCustomObject]@{
                         xID           = $i++
                         Logtype       = $LogType
-                        DateTime      = if ($Item.time -ne 0) {
-                            $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.time))
+                        DateTime      = if ($Item.unix_time -ne 0) {
+                            $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.unix_time))
                             $DateTimeUTC.ToLocalTime()
                         }
                         Size          = $Item.size

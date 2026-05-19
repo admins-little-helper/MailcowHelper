@@ -4,6 +4,7 @@
 
 - [Release Notes](#release-notes)
   - [Table of Contents](#table-of-contents)
+  - [Version 1.4.1 (2026-05-19)](#version-141-2026-05-19)
   - [Version 1.4.0 (2026-04-24)](#version-140-2026-04-24)
   - [Version 1.3.1 (2026-04-12)](#version-131-2026-04-12)
   - [Version 1.3.0 (2026-04-09)](#version-130-2026-04-09)
@@ -16,6 +17,11 @@
   - [Version 1.0.0 (2026-02-16)](#version-100-2026-02-16)
 
 See [README](README.md) for general information.
+
+## Version 1.4.1 (2026-05-19)
+
+- Fix:
+  - Get-MHLog: Fixed issue in showing correct DateTime value in output for Rspamd-History log.
 
 ## Version 1.4.0 (2026-04-24)
 
