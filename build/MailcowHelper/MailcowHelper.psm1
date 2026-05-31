@@ -3538,8 +3538,8 @@ function Get-Mailbox {
 
                 $ConvertedItem = [PSCustomObject]@{
                     Username               = $Item.username
-                    Active                 = [System.Boolean][System.Int32]$Item.active
-                    ActiveInt              = [System.Boolean][System.Int32]$Item.active_int
+                    Active                 = [System.Int32]$Item.active
+                    ActiveInt              = [System.Int32]$Item.active_int
                     Domain                 = $Item.domain
                     Name                   = $Item.name
                     LocalPart              = $Item.local_part
@@ -3575,10 +3575,22 @@ function Get-Mailbox {
                     IsRelayed              = [System.Boolean][System.Int32]$Item.is_relayed
                     WhenCreated            = if ($Item.created) { (Get-Date -Date $Item.created) }
                     WhenModified           = if ($Item.modified) { (Get-Date -Date $Item.modified) }
-                    LastImapLogin          = if ($Item.last_imap_login) { (Get-Date -Date $Item.last_imap_login) }
-                    LastSmtpLogin          = if ($Item.last_smtp_login) { (Get-Date -Date $Item.last_smtp_login) }
-                    LastPop3Login          = if ($Item.last_pop3_login) { (Get-Date -Date $Item.last_pop3_login) }
-                    LastSsoLogin           = if ($Item.last_sso_login) { (Get-Date -Date $Item.last_sso_login) }
+                    LastImapLogin          = if ($Item.last_imap_login -ne 0) {
+                        $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.last_imap_login))
+                        $DateTimeUTC.ToLocalTime()
+                    }
+                    LastSmtpLogin          = if ($Item.last_smtp_login -ne 0) {
+                        $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.last_smtp_login))
+                        $DateTimeUTC.ToLocalTime()
+                    }
+                    LastPop3Login          = if ($Item.last_pop3_login -ne 0) {
+                        $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.last_pop3_login))
+                        $DateTimeUTC.ToLocalTime()
+                    }
+                    LastSsoLogin           = if ($Item.last_sso_login -ne 0) {
+                        $DateTimeUTC = $(Get-Date -Date "1970-01-01T00:00:00") + ([System.TimeSpan]::FromSeconds($Item.last_sso_login))
+                        $DateTimeUTC.ToLocalTime()
+                    }
                 }
                 $ConvertedItem.PSObject.TypeNames.Insert(0, "MHMailbox")
                 $ConvertedItem
